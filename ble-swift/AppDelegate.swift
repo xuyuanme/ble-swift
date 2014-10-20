@@ -13,10 +13,57 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+
+        if (application.respondsToSelector(Selector("registerUserNotificationSettings:"))) {
+            application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: UIUserNotificationType.Sound | UIUserNotificationType.Alert |
+                UIUserNotificationType.Badge, categories: nil))
+            application.registerForRemoteNotifications()
+        } else {
+            application.registerForRemoteNotificationTypes(UIRemoteNotificationType.Badge | UIRemoteNotificationType.Sound | UIRemoteNotificationType.Alert)
+        }
+        
+        if var options = launchOptions {
+            if var localNotification: UILocalNotification = options[UIApplicationLaunchOptionsLocalNotificationKey] as? UILocalNotification {
+                Utils.showAlert("didFinishLaunchingWithOptions \(localNotification.alertBody!)")
+            }
+            if var remoteNotification: NSDictionary = options[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary {
+                var notification:NSDictionary = remoteNotification.objectForKey("aps") as NSDictionary
+                var alert:String = notification.objectForKey("alert") as String
+                Utils.showAlert("didFinishLaunchingWithOptions \(alert)")
+            }
+        }
+
         return true
+    }
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        var characterSet: NSCharacterSet = NSCharacterSet(charactersInString: "<>")
+        var deviceTokenString: String = (deviceToken.description as NSString)
+            .stringByTrimmingCharactersInSet( characterSet)
+            .stringByReplacingOccurrencesOfString(" ", withString: "") as String
+        
+        println("didRegisterForRemoteNotificationsWithDeviceToken \(deviceTokenString)")
+    }
+    
+    func application(application: UIApplication!, didFailToRegisterForRemoteNotificationsWithError error: NSError!) {
+        println("didFailToRegisterForRemoteNotificationsWithError \(error.localizedDescription)")
+    }
+    
+    func application(application: UIApplication, didReceiveLocalNotification localNotification:UILocalNotification) {
+        println("didReceiveLocalNotification "+localNotification.alertBody!)
+        Utils.showAlert("didReceiveLocalNotification \(localNotification.alertBody!)")
+    }
+    
+    func application(application: UIApplication!, didReceiveRemoteNotification remoteNotification:NSDictionary!) {
+        var notification:NSDictionary = remoteNotification.objectForKey("aps") as NSDictionary
+        println(notification)
+        
+        var alert:String = notification.objectForKey("alert") as String
+        println(alert)
+        
+        Utils.showAlert("didReceiveRemoteNotification \(alert)")
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -41,6 +88,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
 }
-

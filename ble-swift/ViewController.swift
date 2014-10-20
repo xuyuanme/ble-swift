@@ -19,7 +19,10 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
+    @IBAction func testButtonClicked(sender: AnyObject) {
+        println("testButtonClicked")
+        Utils.sendNotification("testButtonClicked", soundName: "")
+    }
 
 }
-
