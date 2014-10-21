@@ -25,13 +25,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if var options = launchOptions {
+            // User click local notification to launch app
             if var localNotification: UILocalNotification = options[UIApplicationLaunchOptionsLocalNotificationKey] as? UILocalNotification {
                 Utils.showAlert("didFinishLaunchingWithOptions \(localNotification.alertBody!)")
-            }
-            if var remoteNotification: NSDictionary = options[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary {
-                var notification:NSDictionary = remoteNotification.objectForKey("aps") as NSDictionary
-                var alert:String = notification.objectForKey("alert") as String
-                Utils.showAlert("didFinishLaunchingWithOptions \(alert)")
             }
         }
 
@@ -52,18 +48,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(application: UIApplication, didReceiveLocalNotification localNotification:UILocalNotification) {
+        // Receive local notification in the foreground
+        // Or user click local notification to switch to foreground
         println("didReceiveLocalNotification "+localNotification.alertBody!)
         Utils.showAlert("didReceiveLocalNotification \(localNotification.alertBody!)")
     }
-    
-    func application(application: UIApplication!, didReceiveRemoteNotification remoteNotification:NSDictionary!) {
+
+    func application(application: UIApplication!, didReceiveRemoteNotification remoteNotification:NSDictionary!, fetchCompletionHandler handler:(UIBackgroundFetchResult) -> Void) {
         var notification:NSDictionary = remoteNotification.objectForKey("aps") as NSDictionary
-        println(notification)
-        
         var alert:String = notification.objectForKey("alert") as String
-        println(alert)
         
-        Utils.showAlert("didReceiveRemoteNotification \(alert)")
+        if (application.applicationState == UIApplicationState.Active || application.applicationState == UIApplicationState.Inactive) {
+            // If the value is Inactive, the user tapped an action button; if the value is Active, the app was frontmost when it received the notification
+            Utils.showAlert("didReceiveRemoteNotification \(application.applicationState.rawValue.description) \(alert)")
+            application.applicationIconBadgeNumber = 0
+        } else {
+            // Background or Not Running
+            println(notification)
+        }
+
+        handler(UIBackgroundFetchResult.NewData)
     }
 
     func applicationWillResignActive(application: UIApplication) {
