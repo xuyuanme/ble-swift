@@ -13,7 +13,7 @@ class Utils {
     
     class func sendNotification(note:String, soundName:String) {
         var notification = UILocalNotification()
-        notification.fireDate = NSDate(timeIntervalSinceNow: 7)
+        notification.fireDate = NSDate(timeIntervalSinceNow: 1)
         notification.hasAction = false
         notification.alertBody = note
         notification.timeZone = NSTimeZone.defaultTimeZone()

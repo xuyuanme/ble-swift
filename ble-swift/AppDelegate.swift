@@ -7,11 +7,13 @@
 //
 
 import UIKit
+import CoreLocation
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate, UIAlertViewDelegate {
 
     var window: UIWindow?
+    var locationManager: CLLocationManager!
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
@@ -25,13 +27,47 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if var options = launchOptions {
-            // User click local notification to launch app
             if var localNotification: UILocalNotification = options[UIApplicationLaunchOptionsLocalNotificationKey] as? UILocalNotification {
+                // User click local notification to launch app
+                // Need to handle the local notification here
                 Utils.showAlert("didFinishLaunchingWithOptions \(localNotification.alertBody!)")
+            }
+            if var remoteNotification: NSDictionary = options[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary {
+                // Awake from remote notification
+                // No further logic here, will be handled by application didReceiveRemoteNotification fetchCompletionHandler
+                Utils.sendNotification("Awake from remote notification", soundName: "")
+            }
+            if var locations: AnyObject = options[UIApplicationLaunchOptionsLocationKey] {
+                // Awake from location
+                // No further logic here, will be handled by locationManager didUpdateLocations
+                Utils.sendNotification("Awake from location", soundName: "")
             }
         }
 
+        initLocationManager()
+
         return true
+    }
+    
+    func initLocationManager() {
+        if (nil == locationManager) {
+            println("Initialize locationManager")
+            locationManager = CLLocationManager()
+        }
+        locationManager.delegate = self
+        if (locationManager.respondsToSelector(Selector("requestAlwaysAuthorization"))) {
+            println("requestAlwaysAuthorization for iOS8")
+            
+            var status:CLAuthorizationStatus = CLLocationManager.authorizationStatus()
+            
+            if (status == CLAuthorizationStatus.Denied || status == CLAuthorizationStatus.AuthorizedWhenInUse) {
+                var alert = UIAlertView(title: status == CLAuthorizationStatus.Denied ? "Location services are off" : "Background location is not enabled", message: "To use background location you must turn on 'Always' in the Location Services Settings", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Settings")
+                alert.show()
+            } else if (status == CLAuthorizationStatus.NotDetermined) {
+                locationManager.requestAlwaysAuthorization()
+            }
+        }
+        locationManager.startMonitoringSignificantLocationChanges()
     }
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
@@ -90,6 +126,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+    
+    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [CLLocation]!) {
+        println("Updated locations: \(locations)")
+    }
+    
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+        if (buttonIndex == 1) {
+            var settingURL = NSURL(string: UIApplicationOpenSettingsURLString)
+            UIApplication.sharedApplication().openURL(settingURL!)
+        }
     }
 
 }
