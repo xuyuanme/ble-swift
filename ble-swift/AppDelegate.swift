@@ -37,13 +37,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                 // No further logic here, will be handled by application didReceiveRemoteNotification fetchCompletionHandler
                 Utils.sendNotification("Awake from remote notification", soundName: "")
             }
-            if var locations: AnyObject = options[UIApplicationLaunchOptionsLocationKey] {
+            if var booleanFlag: NSNumber = options[UIApplicationLaunchOptionsLocationKey] as? NSNumber {
                 // Awake from location
                 // No further logic here, will be handled by locationManager didUpdateLocations
                 Utils.sendNotification("Awake from location", soundName: "")
             }
+            if var centralManagerIdentifiers: NSArray = options[UIApplicationLaunchOptionsBluetoothCentralsKey] as? NSArray {
+                // Awake as Bluetooth Central
+                // No further logic here, will be handled by centralManager willRestoreState
+                Utils.sendNotification("Awake as Bluetooth Central", soundName: "")
+            }
+            if var peripheralManagerIdentifiers: NSArray = options[UIApplicationLaunchOptionsBluetoothPeripheralsKey] as? NSArray {
+                // Awake as Bluetooth Peripheral
+                // No further logic here, will be handled by peripheralManager willRestoreState
+                Utils.sendNotification("Awake as Bluetooth Peripheral", soundName: "")
+            }
         }
+        
+        // Initialize the Central Manager
+        CentralManager.sharedInstance()
 
+        // Initialize the Location Manager
         initLocationManager()
 
         return true
@@ -51,12 +65,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     func initLocationManager() {
         if (nil == locationManager) {
-            println("Initialize locationManager")
+            Logger.debug("Initialize Location Manager")
             locationManager = CLLocationManager()
         }
         locationManager.delegate = self
         if (locationManager.respondsToSelector(Selector("requestAlwaysAuthorization"))) {
-            println("requestAlwaysAuthorization for iOS8")
+            Logger.debug("requestAlwaysAuthorization for iOS8")
             
             var status:CLAuthorizationStatus = CLLocationManager.authorizationStatus()
             
@@ -76,17 +90,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             .stringByTrimmingCharactersInSet( characterSet)
             .stringByReplacingOccurrencesOfString(" ", withString: "") as String
         
-        println("didRegisterForRemoteNotificationsWithDeviceToken \(deviceTokenString)")
+        Logger.debug("didRegisterForRemoteNotificationsWithDeviceToken \(deviceTokenString)")
     }
     
     func application(application: UIApplication!, didFailToRegisterForRemoteNotificationsWithError error: NSError!) {
-        println("didFailToRegisterForRemoteNotificationsWithError \(error.localizedDescription)")
+        Logger.debug("didFailToRegisterForRemoteNotificationsWithError \(error.localizedDescription)")
     }
     
     func application(application: UIApplication, didReceiveLocalNotification localNotification:UILocalNotification) {
         // Receive local notification in the foreground
         // Or user click local notification to switch to foreground
-        println("didReceiveLocalNotification "+localNotification.alertBody!)
+        Logger.debug("didReceiveLocalNotification "+localNotification.alertBody!)
         Utils.showAlert("didReceiveLocalNotification \(localNotification.alertBody!)")
     }
 
@@ -100,7 +114,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             application.applicationIconBadgeNumber = 0
         } else {
             // Background or Not Running
-            println(notification)
+            Logger.debug(notification)
         }
 
         handler(UIBackgroundFetchResult.NewData)
@@ -128,10 +142,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
+    // MARK: CLLocationManagerDelegate
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [CLLocation]!) {
-        println("Updated locations: \(locations)")
+        Logger.debug("Updated locations: \(locations)")
+        Utils.sendNotification("\(locations)", soundName: "")
     }
     
+    // MARK: UIAlertViewDelegate
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
         if (buttonIndex == 1) {
             var settingURL = NSURL(string: UIApplicationOpenSettingsURLString)

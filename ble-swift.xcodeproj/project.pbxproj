@@ -13,7 +13,9 @@
 		1C49669B19F4B3B200B96165 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C49669919F4B3B200B96165 /* Main.storyboard */; };
 		1C49669D19F4B3B200B96165 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C49669C19F4B3B200B96165 /* Images.xcassets */; };
 		1C4966A019F4B3B200B96165 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1C49669E19F4B3B200B96165 /* LaunchScreen.xib */; };
-		1C57019F19F4DCB0004D5986 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C57019E19F4DCB0004D5986 /* Utils.swift */; };
+		1C502B0319FA43F800999451 /* CentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C502B0219FA43F800999451 /* CentralManager.swift */; };
+		1C502B0519FA466200999451 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C502B0419FA466200999451 /* Utils.swift */; };
+		1C502B0919FA46C000999451 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C502B0819FA46C000999451 /* Logger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +29,9 @@
 		1C49669F19F4B3B200B96165 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		1C4966AA19F4B3B200B96165 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C4966AB19F4B3B200B96165 /* ble_swiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ble_swiftTests.swift; sourceTree = "<group>"; };
-		1C57019E19F4DCB0004D5986 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		1C502B0219FA43F800999451 /* CentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CentralManager.swift; sourceTree = "<group>"; };
+		1C502B0419FA466200999451 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = Utilities/Utils.swift; sourceTree = "<group>"; };
+		1C502B0819FA46C000999451 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,10 +69,11 @@
 			children = (
 				1C49669519F4B3B200B96165 /* AppDelegate.swift */,
 				1C49669719F4B3B200B96165 /* ViewController.swift */,
-				1C57019E19F4DCB0004D5986 /* Utils.swift */,
+				1C502B0219FA43F800999451 /* CentralManager.swift */,
 				1C49669919F4B3B200B96165 /* Main.storyboard */,
 				1C49669C19F4B3B200B96165 /* Images.xcassets */,
 				1C49669E19F4B3B200B96165 /* LaunchScreen.xib */,
+				1C502B0719FA468900999451 /* Utilities */,
 				1C49669319F4B3B200B96165 /* Supporting Files */,
 			);
 			path = "ble-swift";
@@ -97,6 +102,15 @@
 				1C4966AA19F4B3B200B96165 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1C502B0719FA468900999451 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				1C502B0419FA466200999451 /* Utils.swift */,
+				1C502B0819FA46C000999451 /* Logger.swift */,
+			);
+			name = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -175,9 +189,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C502B0919FA46C000999451 /* Logger.swift in Sources */,
 				1C49669819F4B3B200B96165 /* ViewController.swift in Sources */,
 				1C49669619F4B3B200B96165 /* AppDelegate.swift in Sources */,
-				1C57019F19F4DCB0004D5986 /* Utils.swift in Sources */,
+				1C502B0319FA43F800999451 /* CentralManager.swift in Sources */,
+				1C502B0519FA466200999451 /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,6 +257,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "-D DEBUG";
 				PROVISIONING_PROFILE = "f2277f89-1d88-4779-bb27-da73f70a8159";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -270,6 +287,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -278,6 +296,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_SWIFT_FLAGS = "";
 				PROVISIONING_PROFILE = "f2277f89-1d88-4779-bb27-da73f70a8159";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

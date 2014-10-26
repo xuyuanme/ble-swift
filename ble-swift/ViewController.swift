@@ -21,9 +21,9 @@ class ViewController: UIViewController {
     }
     
     @IBAction func testButtonClicked(sender: AnyObject) {
-        println("testButtonClicked")
+        Logger.debug("testButtonClicked")
 //        Utils.sendNotification("testButtonClicked", soundName: "")
-        kill(getpid(), SIGKILL);
+        kill(getpid(), SIGKILL)
     }
 
 }
