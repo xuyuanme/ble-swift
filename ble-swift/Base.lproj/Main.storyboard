@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="qff-w5-1jg">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="qff-w5-1jg">
     <dependencies>
-        <deployment defaultVersion="1792" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Main-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="bleapp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Main" id="vXZ-lx-hvc" userLabel="Main" customClass="MainViewController" customModule="bleapp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
@@ -17,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8aD-OZ-5ik">
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8aD-OZ-5ik">
                                 <rect key="frame" x="97" y="285" width="79" height="30"/>
                                 <state key="normal" title="Test Button">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -29,27 +29,62 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="8aD-OZ-5ik" firstAttribute="centerY" secondItem="kh9-bI-dsS" secondAttribute="centerY" id="8sS-Cg-QnE"/>
-                            <constraint firstItem="8aD-OZ-5ik" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="ySX-eK-mKV"/>
+                            <constraint firstItem="8aD-OZ-5ik" firstAttribute="centerY" secondItem="kh9-bI-dsS" secondAttribute="centerY" id="jvO-yC-Kmo"/>
+                            <constraint firstItem="8aD-OZ-5ik" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="uiG-DN-n92"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
-                                <exclude reference="8sS-Cg-QnE"/>
-                                <exclude reference="ySX-eK-mKV"/>
+                                <exclude reference="jvO-yC-Kmo"/>
+                                <exclude reference="uiG-DN-n92"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="constraints">
-                                <include reference="8sS-Cg-QnE"/>
-                                <include reference="ySX-eK-mKV"/>
+                                <include reference="jvO-yC-Kmo"/>
+                                <include reference="uiG-DN-n92"/>
                             </mask>
                         </variation>
                     </view>
-                    <navigationItem key="navigationItem" id="usl-b8-ClD"/>
+                    <navigationItem key="navigationItem" id="usl-b8-ClD">
+                        <barButtonItem key="rightBarButtonItem" title="Connect" id="6LM-kH-65n">
+                            <connections>
+                                <segue destination="ACL-H9-SxR" kind="show" identifier="SelectPeripheral" id="KbT-Ub-9e8"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="connectBarButton" destination="6LM-kH-65n" id="BUX-ak-9Ov"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1499" y="108"/>
+        </scene>
+        <!--Select Peripheral-->
+        <scene sceneID="jsK-wz-fBo">
+            <objects>
+                <tableViewController title="Select Peripheral" id="ACL-H9-SxR" customClass="SelectPeripheralViewController" customModule="bleapp" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Lg8-51-OSA">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="PeripheralCell" id="okN-6P-UhC">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="okN-6P-UhC" id="rej-hQ-wIw">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="ACL-H9-SxR" id="x1Q-Zn-l3O"/>
+                            <outlet property="delegate" destination="ACL-H9-SxR" id="nJx-HU-9GD"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Vye-WT-WP1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2310" y="108"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="JFP-06-3I3">
