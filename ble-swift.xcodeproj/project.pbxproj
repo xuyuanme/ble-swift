@@ -17,6 +17,7 @@
 		1C502B0519FA466200999451 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C502B0419FA466200999451 /* Utils.swift */; };
 		1C502B0919FA46C000999451 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C502B0819FA46C000999451 /* Logger.swift */; };
 		1C502B0D19FC9EB400999451 /* SelectPeripheralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C502B0C19FC9EB400999451 /* SelectPeripheralViewController.swift */; };
+		1CB4175D1A050EA2004F1AF8 /* Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB4175C1A050EA2004F1AF8 /* Peripheral.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		1C502B0419FA466200999451 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = Utilities/Utils.swift; sourceTree = "<group>"; };
 		1C502B0819FA46C000999451 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		1C502B0C19FC9EB400999451 /* SelectPeripheralViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectPeripheralViewController.swift; sourceTree = "<group>"; };
+		1CB4175C1A050EA2004F1AF8 /* Peripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Peripheral.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 				1C49669719F4B3B200B96165 /* MainViewController.swift */,
 				1C502B0C19FC9EB400999451 /* SelectPeripheralViewController.swift */,
 				1C502B0219FA43F800999451 /* CentralManager.swift */,
+				1CB4175C1A050EA2004F1AF8 /* Peripheral.swift */,
 				1C49669919F4B3B200B96165 /* Main.storyboard */,
 				1C49669C19F4B3B200B96165 /* Images.xcassets */,
 				1C49669E19F4B3B200B96165 /* LaunchScreen.xib */,
@@ -196,6 +199,7 @@
 				1C49669819F4B3B200B96165 /* MainViewController.swift in Sources */,
 				1C502B0D19FC9EB400999451 /* SelectPeripheralViewController.swift in Sources */,
 				1C49669619F4B3B200B96165 /* AppDelegate.swift in Sources */,
+				1CB4175D1A050EA2004F1AF8 /* Peripheral.swift in Sources */,
 				1C502B0319FA43F800999451 /* CentralManager.swift in Sources */,
 				1C502B0519FA466200999451 /* Utils.swift in Sources */,
 			);

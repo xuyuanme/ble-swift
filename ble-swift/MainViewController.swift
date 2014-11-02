@@ -27,7 +27,7 @@ class MainViewController: UIViewController, SelectPeripheralProtocol {
     override func prepareForSegue(segue:UIStoryboardSegue, sender:AnyObject!) {
         if(segue.identifier == "SelectPeripheral") {
             var controller:SelectPeripheralViewController = segue.destinationViewController as SelectPeripheralViewController
-            controller.delegate = self;
+            controller.delegate = self
         }
     }
     
@@ -59,8 +59,8 @@ class MainViewController: UIViewController, SelectPeripheralProtocol {
     }
     
     // MARK: SelectPeripheralProtocol
-    func didPeripheralSelected(indexPath:NSIndexPath) {
-        println("\(indexPath.row)")
+    func didPeripheralSelected(peripheral:Peripheral) {
+        Logger.debug("\(peripheral.name)")
         self.connect()
     }
 
