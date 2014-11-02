@@ -7,15 +7,18 @@
 //
 
 import UIKit
+import CoreBluetooth
 
-class MainViewController: UIViewController, SelectPeripheralProtocol {
+class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPeripheralProtocol {
     
     @IBOutlet weak var connectBarButton: UIBarButtonItem!
     
+    var selectedPeripheral : Dictionary<CBPeripheral, Peripheral> = [:]
     var isPeripheralConnected:Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        CentralManager.sharedInstance().connectPeripheralDelegate = self
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -35,8 +38,10 @@ class MainViewController: UIViewController, SelectPeripheralProtocol {
     override func shouldPerformSegueWithIdentifier(identifier:String?, sender:AnyObject?) -> Bool {
         if(identifier == "SelectPeripheral") {
             if (self.isPeripheralConnected) {
-                disconnect()
-                return false
+                if let peripheral = self.selectedPeripheral.values.array.first {
+                    CentralManager.sharedInstance().cancelPeripheralConnection(peripheral, userClickedCancel: true)
+                    return false
+                }
             }
         }
         return true
@@ -47,21 +52,39 @@ class MainViewController: UIViewController, SelectPeripheralProtocol {
         // Utils.sendNotification("testButtonClicked", soundName: "")
         kill(getpid(), SIGKILL)
     }
-    
-    func connect() {
-        self.isPeripheralConnected = true
-        self.connectBarButton.title = "Disconnect"
-    }
-    
-    func disconnect() {
-        self.isPeripheralConnected = false
-        self.connectBarButton.title = "Connect"
-    }
-    
+
     // MARK: SelectPeripheralProtocol
     func didPeripheralSelected(peripheral:Peripheral) {
-        Logger.debug("\(peripheral.name)")
-        self.connect()
+        Logger.debug("MainViewController#didPeripheralSelected \(peripheral.name)")
+        selectedPeripheral.removeAll(keepCapacity: false)
+        selectedPeripheral[peripheral.cbPeripheral] = peripheral
+        CentralManager.sharedInstance().connectPeripheral(peripheral)
+    }
+    
+    // MARK: ConnectPeripheralProtocol
+    func didConnectPeripheral(cbPeripheral: CBPeripheral!) {
+        Logger.debug("MainViewController#didConnectPeripheral \(cbPeripheral.name)")
+        dispatch_async(dispatch_get_main_queue(), {
+            self.isPeripheralConnected = true
+            self.title = cbPeripheral.name
+            self.connectBarButton.title = "Disconnect"
+        })
+    }
+    
+    func didDisconnectPeripheral(cbPeripheral: CBPeripheral!, error: NSError!, userClickedCancel: Bool) {
+        Logger.debug("MainViewController#didDisconnectPeripheral \(cbPeripheral.name)")
+        let peripheral = self.selectedPeripheral[cbPeripheral]
+        if (!userClickedCancel && peripheral != nil) {
+            Logger.debug("Unexpected disconnect, try auto reconnect...")
+            CentralManager.sharedInstance().connectPeripheral(peripheral!)
+        } else {
+            Logger.debug("User clicked disconnect")
+            dispatch_async(dispatch_get_main_queue(), {
+                self.isPeripheralConnected = false
+                self.title = ""
+                self.connectBarButton.title = "Connect"
+            })
+        }
     }
 
 }

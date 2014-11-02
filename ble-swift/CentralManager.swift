@@ -11,11 +11,18 @@ import CoreBluetooth
 
 var thisCentralManager : CentralManager?
 
+protocol ConnectPeripheralProtocol {
+    func didConnectPeripheral(cbPeripheral:CBPeripheral!)
+    func didDisconnectPeripheral(cbPeripheral:CBPeripheral!, error:NSError!, userClickedCancel:Bool)
+}
+
 public class CentralManager : NSObject, CBCentralManagerDelegate {
+    var connectPeripheralDelegate : ConnectPeripheralProtocol!
     
     private let cbCentralManager : CBCentralManager!
     private let centralQueue = dispatch_queue_create("me.xuyuan.ble", DISPATCH_QUEUE_SERIAL)
     private var _isScanning = false
+    private var userClickedCancel = false
     private var afterPeripheralDiscovered : ((cbPeripheral:CBPeripheral, advertisementData:NSDictionary, RSSI:NSNumber)->())?
 
     // MARK: Singleton
@@ -54,6 +61,21 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
             self.cbCentralManager.stopScan()
         }
     }
+    
+    // connection
+    public func connectPeripheral(peripheral:Peripheral) {
+        Logger.debug("CentralManager#connectPeripheral")
+        self.cbCentralManager.connectPeripheral(peripheral.cbPeripheral, options : [
+            CBCentralManagerOptionShowPowerAlertKey : true,
+            CBConnectPeripheralOptionNotifyOnDisconnectionKey : true,
+            CBConnectPeripheralOptionNotifyOnNotificationKey : true])
+    }
+    
+    public func cancelPeripheralConnection(peripheral:Peripheral, userClickedCancel:Bool) {
+        Logger.debug("CentralManager#cancelPeripheralConnection")
+        self.cbCentralManager.cancelPeripheralConnection(peripheral.cbPeripheral)
+        self.userClickedCancel = userClickedCancel
+    }
 
     // MARK: CBCentralManagerDelegate
     public func centralManagerDidUpdateState(_:CBCentralManager!) {
@@ -69,6 +91,9 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
     
     public func centralManager(_:CBCentralManager!, didConnectPeripheral peripheral:CBPeripheral!) {
         Logger.debug("CentralManager#didConnectPeripheral")
+        if let connectPeripheralDelegate = self.connectPeripheralDelegate {
+            connectPeripheralDelegate.didConnectPeripheral(peripheral)
+        }
     }
     
     public func centralManager(_:CBCentralManager!, didFailToConnectPeripheral peripheral:CBPeripheral!, error:NSError!) {
@@ -77,6 +102,9 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
     
     public func centralManager(_:CBCentralManager!, didDisconnectPeripheral peripheral:CBPeripheral!, error:NSError!) {
         Logger.debug("CentralManager#didDisconnectPeripheral")
+        if let connectPeripheralDelegate = self.connectPeripheralDelegate {
+            connectPeripheralDelegate.didDisconnectPeripheral(peripheral, error: error, userClickedCancel: userClickedCancel)
+        }
     }
 
     public func centralManager(_:CBCentralManager!, didRetrieveConnectedPeripherals peripherals:[AnyObject]!) {

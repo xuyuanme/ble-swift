@@ -50,6 +50,7 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
     
     public func peripheral(_:CBPeripheral!, didModifyServices invalidatedServices:[AnyObject]!) {
         Logger.debug("Peripheral#didModifyServices")
+        CentralManager.sharedInstance().cancelPeripheralConnection(self, userClickedCancel: false)
     }
     
     // services
