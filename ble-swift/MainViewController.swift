@@ -24,6 +24,7 @@ class MainViewController: UIViewController, SelectPeripheralProtocol {
         // Dispose of any resources that can be recreated.
     }
     
+    // MARK: Controller logic
     override func prepareForSegue(segue:UIStoryboardSegue, sender:AnyObject!) {
         if(segue.identifier == "SelectPeripheral") {
             var controller:SelectPeripheralViewController = segue.destinationViewController as SelectPeripheralViewController
@@ -41,10 +42,9 @@ class MainViewController: UIViewController, SelectPeripheralProtocol {
         return true
     }
     
-    // MARK: Controller logic
     @IBAction func testButtonClicked(sender: AnyObject) {
         Logger.debug("testButtonClicked")
-//        Utils.sendNotification("testButtonClicked", soundName: "")
+        // Utils.sendNotification("testButtonClicked", soundName: "")
         kill(getpid(), SIGKILL)
     }
     

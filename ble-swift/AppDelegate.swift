@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     var window: UIWindow?
     var locationManager: CLLocationManager!
 
+    // MARK: UIApplicationDelegate
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
 
@@ -101,7 +102,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // Receive local notification in the foreground
         // Or user click local notification to switch to foreground
         Logger.debug("didReceiveLocalNotification "+localNotification.alertBody!)
-        Utils.showAlert("didReceiveLocalNotification \(localNotification.alertBody!)")
+        // Utils.showAlert("didReceiveLocalNotification \(localNotification.alertBody!)")
     }
 
     func application(application: UIApplication!, didReceiveRemoteNotification remoteNotification:NSDictionary!, fetchCompletionHandler handler:(UIBackgroundFetchResult) -> Void) {
