@@ -105,6 +105,7 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
         if let connectPeripheralDelegate = self.connectPeripheralDelegate {
             connectPeripheralDelegate.didDisconnectPeripheral(peripheral, error: error, userClickedCancel: userClickedCancel)
         }
+        userClickedCancel = false
     }
 
     public func centralManager(_:CBCentralManager!, didRetrieveConnectedPeripherals peripherals:[AnyObject]!) {

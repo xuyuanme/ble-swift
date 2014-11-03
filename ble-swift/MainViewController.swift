@@ -77,6 +77,9 @@ class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPer
         if (!userClickedCancel && peripheral != nil) {
             Logger.debug("Unexpected disconnect, try auto reconnect...")
             CentralManager.sharedInstance().connectPeripheral(peripheral!)
+            dispatch_async(dispatch_get_main_queue(), {
+                self.title = "Reconnecting..."
+            })
         } else {
             Logger.debug("User clicked disconnect")
             dispatch_async(dispatch_get_main_queue(), {

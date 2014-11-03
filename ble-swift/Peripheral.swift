@@ -49,8 +49,12 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
     }
     
     public func peripheral(_:CBPeripheral!, didModifyServices invalidatedServices:[AnyObject]!) {
-        Logger.debug("Peripheral#didModifyServices")
-        CentralManager.sharedInstance().cancelPeripheralConnection(self, userClickedCancel: false)
+        // TODO: Why invalidatedServices is always empty?
+        Logger.debug("Peripheral#didModifyServices \(invalidatedServices.count)")
+        // CentralManager.sharedInstance().cancelPeripheralConnection(self, userClickedCancel: false)
+        for service in invalidatedServices {
+            Logger.debug("\(service)")
+        }
     }
     
     // services
