@@ -9,9 +9,10 @@
 import UIKit
 import CoreBluetooth
 
-class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPeripheralProtocol {
+class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPeripheralProtocol, ReadPeripheralProtocol {
     
     @IBOutlet weak var connectBarButton: UIBarButtonItem!
+    @IBOutlet weak var wheelValueLabel: UILabel!
     
     var selectedPeripheral : Dictionary<CBPeripheral, Peripheral> = [:]
     var isPeripheralConnected:Bool = false
@@ -69,6 +70,10 @@ class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPer
             self.title = cbPeripheral.name
             self.connectBarButton.title = "Disconnect"
         })
+        // Start to read data
+        if let peripheral = self.selectedPeripheral[cbPeripheral] {
+            peripheral.discoverServices([CBUUID(string: serviceUUIDString)], delegate: self)
+        }
     }
     
     func didDisconnectPeripheral(cbPeripheral: CBPeripheral!, error: NSError!, userClickedCancel: Bool) {
@@ -86,8 +91,43 @@ class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPer
                 self.isPeripheralConnected = false
                 self.title = ""
                 self.connectBarButton.title = "Connect"
+                self.wheelValueLabel.text = "0"
             })
         }
+    }
+    
+    // MARK: ReadPeripheralProtocol for CSC (Cycling Speed and Cadence)
+    var serviceUUIDString:String = "1816"
+    var characteristicUUIDString:String = "2A5B"
+    
+    var wheelFlag:UInt8 = 0x01
+    var crankFlag:UInt8 = 0x02
+    
+    func didUpdateValueForCharacteristic(characteristic: CBCharacteristic!, error: NSError!) {
+        var flags:UInt8 = 0
+        var wheelRevolutions:UInt32 = 0
+        var lastWheelEventTime:UInt16 = 0
+        var crankRevolutions:UInt16 = 0
+        var lastCrankEventTime:UInt16 = 0
+        
+        var data = characteristic.value
+        data.getBytes(&flags, range: NSRange(location: 0, length: 1))
+        
+        if (flags & wheelFlag == wheelFlag) {
+            data.getBytes(&wheelRevolutions, range: NSRange(location: 1, length: 4))
+            data.getBytes(&lastWheelEventTime, range: NSRange(location: 5, length: 2))
+            data.getBytes(&crankRevolutions, range: NSRange(location: 7, length: 2))
+            data.getBytes(&lastCrankEventTime, range: NSRange(location: 9, length: 2))
+        } else if (flags & crankFlag == crankFlag) {
+            data.getBytes(&crankRevolutions, range: NSRange(location: 1, length: 2))
+            data.getBytes(&lastCrankEventTime, range: NSRange(location: 3, length: 2))
+        }
+        
+        Logger.debug("\(wheelRevolutions)")
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            self.wheelValueLabel.text = String(wheelRevolutions)
+        })
     }
 
 }

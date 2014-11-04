@@ -9,7 +9,14 @@
 import Foundation
 import CoreBluetooth
 
+protocol ReadPeripheralProtocol {
+    var serviceUUIDString:String {get}
+    var characteristicUUIDString:String {get}
+    func didUpdateValueForCharacteristic(characteristic:CBCharacteristic!, error:NSError!)
+}
+
 public class Peripheral : NSObject, CBPeripheralDelegate {
+    var readPeripheralDelegate:ReadPeripheralProtocol!
     
     // INTERNAL
     internal let cbPeripheral    : CBPeripheral!
@@ -37,9 +44,17 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
     public init(cbPeripheral:CBPeripheral, advertisements:Dictionary<NSObject, AnyObject>, rssi:Int) {
         super.init()
         self.cbPeripheral = cbPeripheral
-        self.cbPeripheral.delegate = self
+        // Fix bug: cbPeripheral.delegate will point to wrong instance because select peripheral screen refresh too fast
+        // Move to Peripheral#discoverServices
+        // self.cbPeripheral.delegate = self
         self.advertisements = advertisements
         self.rssi = rssi
+    }
+    
+    func discoverServices(serviceUUIDs: [CBUUID]!, delegate: ReadPeripheralProtocol!) {
+        self.cbPeripheral.delegate = self
+        self.readPeripheralDelegate = delegate
+        self.cbPeripheral.discoverServices(serviceUUIDs)
     }
     
     // MARK: CBPeripheralDelegate
@@ -49,17 +64,26 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
     }
     
     public func peripheral(_:CBPeripheral!, didModifyServices invalidatedServices:[AnyObject]!) {
-        // TODO: Why invalidatedServices is always empty?
-        Logger.debug("Peripheral#didModifyServices \(invalidatedServices.count)")
-        // CentralManager.sharedInstance().cancelPeripheralConnection(self, userClickedCancel: false)
-        for service in invalidatedServices {
-            Logger.debug("\(service)")
+        if let delegate = self.readPeripheralDelegate {
+            for service:CBService in invalidatedServices as [CBService]! {
+                if (service.UUID.UUIDString == delegate.serviceUUIDString) {
+                    Logger.debug("Peripheral#didModifyServices \(service)")
+                    CentralManager.sharedInstance().cancelPeripheralConnection(self, userClickedCancel: false)
+                }
+            }
         }
     }
     
     // services
     public func peripheral(peripheral:CBPeripheral!, didDiscoverServices error:NSError!) {
         Logger.debug("Peripheral#didDiscoverServices: \(self.name)")
+        if let delegate:ReadPeripheralProtocol = self.readPeripheralDelegate {
+            for service:CBService in peripheral.services as [CBService]! {
+                if (service.UUID.UUIDString == delegate.serviceUUIDString) {
+                    peripheral.discoverCharacteristics([CBUUID(string: delegate.characteristicUUIDString)], forService: service)
+                }
+            }
+        }
     }
     
     public func peripheral(_:CBPeripheral!, didDiscoverIncludedServicesForService service:CBService!, error:NSError!) {
@@ -69,6 +93,13 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
     // characteristics
     public func peripheral(_:CBPeripheral!, didDiscoverCharacteristicsForService service:CBService!, error:NSError!) {
         Logger.debug("Peripheral#didDiscoverCharacteristicsForService: \(self.name)")
+        if let delegate:ReadPeripheralProtocol = self.readPeripheralDelegate {
+            for characteristic:CBCharacteristic in service.characteristics as [CBCharacteristic]! {
+                if (characteristic.UUID.UUIDString == delegate.characteristicUUIDString) {
+                    cbPeripheral.setNotifyValue(true, forCharacteristic: characteristic)
+                }
+            }
+        }
     }
     
     public func peripheral(_:CBPeripheral!, didUpdateNotificationStateForCharacteristic characteristic:CBCharacteristic!, error:NSError!) {
@@ -76,7 +107,10 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
     }
     
     public func peripheral(_:CBPeripheral!, didUpdateValueForCharacteristic characteristic:CBCharacteristic!, error:NSError!) {
-        Logger.debug("Peripheral#didUpdateValueForCharacteristic")
+        // Logger.debug("Peripheral#didUpdateValueForCharacteristic")
+        if let delegate:ReadPeripheralProtocol = self.readPeripheralDelegate {
+            delegate.didUpdateValueForCharacteristic(characteristic, error: error)
+        }
     }
     
     public func peripheral(_:CBPeripheral!, didWriteValueForCharacteristic characteristic:CBCharacteristic!, error: NSError!) {

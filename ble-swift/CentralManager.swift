@@ -47,7 +47,7 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
     
     public func startScanningForServiceUUIDs(uuids:[CBUUID]!, afterPeripheralDiscovered:(cbPeripheral:CBPeripheral, advertisementData:NSDictionary, RSSI:NSNumber)->(), allowDuplicatesKey:Bool) {
         if !self._isScanning {
-            Logger.debug("CentralManager#startScanningForServiceUUIDs: \(uuids)")
+            Logger.debug("CentralManager#startScanningForServiceUUIDs: \(uuids) allowDuplicatesKey: \(allowDuplicatesKey)")
             self._isScanning = true
             self.afterPeripheralDiscovered = afterPeripheralDiscovered
             self.cbCentralManager.scanForPeripheralsWithServices(uuids,options: [CBCentralManagerScanOptionAllowDuplicatesKey: allowDuplicatesKey])

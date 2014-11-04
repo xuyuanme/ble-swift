@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Main-->
@@ -26,20 +27,65 @@
                                     <action selector="testButtonClicked:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="l7x-Yo-hCS"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wheel Revolutions:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bDE-rj-yAf">
+                                <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2xU-dd-b83">
+                                <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="206" id="qAj-IB-TAm"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="qAj-IB-TAm"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="qAj-IB-TAm"/>
+                                    </mask>
+                                </variation>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="2xU-dd-b83" firstAttribute="leading" secondItem="bDE-rj-yAf" secondAttribute="trailing" constant="8" symbolic="YES" id="559-91-48g"/>
+                            <constraint firstItem="bDE-rj-yAf" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="49" id="F7h-4r-BBp"/>
+                            <constraint firstItem="2xU-dd-b83" firstAttribute="baseline" secondItem="bDE-rj-yAf" secondAttribute="baseline" id="GXE-sX-DML"/>
+                            <constraint firstItem="bDE-rj-yAf" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="7" id="axm-Jw-phi"/>
                             <constraint firstItem="8aD-OZ-5ik" firstAttribute="centerY" secondItem="kh9-bI-dsS" secondAttribute="centerY" id="jvO-yC-Kmo"/>
                             <constraint firstItem="8aD-OZ-5ik" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="uiG-DN-n92"/>
                         </constraints>
                         <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="bDE-rj-yAf"/>
+                                <exclude reference="2xU-dd-b83"/>
+                            </mask>
                             <mask key="constraints">
+                                <exclude reference="F7h-4r-BBp"/>
+                                <exclude reference="axm-Jw-phi"/>
+                                <exclude reference="559-91-48g"/>
+                                <exclude reference="GXE-sX-DML"/>
                                 <exclude reference="jvO-yC-Kmo"/>
                                 <exclude reference="uiG-DN-n92"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="bDE-rj-yAf"/>
+                                <include reference="2xU-dd-b83"/>
+                            </mask>
                             <mask key="constraints">
+                                <include reference="F7h-4r-BBp"/>
+                                <include reference="axm-Jw-phi"/>
+                                <include reference="559-91-48g"/>
+                                <include reference="GXE-sX-DML"/>
                                 <include reference="jvO-yC-Kmo"/>
                                 <include reference="uiG-DN-n92"/>
                             </mask>
@@ -54,11 +100,12 @@
                     </navigationItem>
                     <connections>
                         <outlet property="connectBarButton" destination="6LM-kH-65n" id="BUX-ak-9Ov"/>
+                        <outlet property="wheelValueLabel" destination="2xU-dd-b83" id="MyO-iB-p0f"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1499" y="108"/>
+            <point key="canvasLocation" x="1560" y="108"/>
         </scene>
         <!--Select Peripheral-->
         <scene sceneID="jsK-wz-fBo">
