@@ -54,9 +54,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                 Utils.sendNotification("Awake as Bluetooth Peripheral", soundName: "")
             }
         }
-        
-        // Initialize the Central Manager
-        CentralManager.sharedInstance()
 
         // Initialize the Location Manager
         initLocationManager()

@@ -55,7 +55,7 @@ class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPer
     }
 
     // MARK: SelectPeripheralProtocol
-    func didPeripheralSelected(peripheral:Peripheral) {
+    func didSelectPeripheral(peripheral:Peripheral) {
         Logger.debug("MainViewController#didPeripheralSelected \(peripheral.name)")
         selectedPeripheral.removeAll(keepCapacity: false)
         selectedPeripheral[peripheral.cbPeripheral] = peripheral
@@ -94,6 +94,10 @@ class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPer
                 self.wheelValueLabel.text = "0"
             })
         }
+    }
+    
+    func didRestorePeripheral(peripheral:Peripheral) {
+        self.didSelectPeripheral(peripheral)
     }
     
     // MARK: ReadPeripheralProtocol for CSC (Cycling Speed and Cadence)

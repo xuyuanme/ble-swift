@@ -10,7 +10,7 @@ import UIKit
 import CoreBluetooth
 
 protocol SelectPeripheralProtocol {
-    func didPeripheralSelected(peripheral:Peripheral)
+    func didSelectPeripheral(peripheral:Peripheral)
 }
 
 class SelectPeripheralViewController: UITableViewController {
@@ -65,7 +65,7 @@ class SelectPeripheralViewController: UITableViewController {
     // MARK: UITableViewDelegate
     override func tableView(tableView:UITableView, didSelectRowAtIndexPath indexPath:NSIndexPath) {
         self.navigationController?.popViewControllerAnimated(true)
-        self.delegate.didPeripheralSelected(discoveredPeripherals.values.array[indexPath.row])
+        self.delegate.didSelectPeripheral(discoveredPeripherals.values.array[indexPath.row])
     }
     
     // MARK: Private

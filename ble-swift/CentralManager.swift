@@ -14,6 +14,7 @@ var thisCentralManager : CentralManager?
 protocol ConnectPeripheralProtocol {
     func didConnectPeripheral(cbPeripheral:CBPeripheral!)
     func didDisconnectPeripheral(cbPeripheral:CBPeripheral!, error:NSError!, userClickedCancel:Bool)
+    func didRestorePeripheral(peripheral:Peripheral)
 }
 
 public class CentralManager : NSObject, CBCentralManagerDelegate {
@@ -117,8 +118,12 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
     }
     
     public func centralManager(_:CBCentralManager!, willRestoreState dict:NSDictionary!) {
-        Logger.debug("CentralManager#willRestoreState")
-        Utils.sendNotification("CBCentralManager willRestoreState", soundName: "")
+        if let peripherals:[CBPeripheral] = dict[CBCentralManagerRestoredStatePeripheralsKey] as [CBPeripheral]! {
+            if (peripherals.count > 0) {
+                var peripheral:Peripheral = Peripheral(cbPeripheral: peripherals[0], advertisements:[:], rssi:0)
+                self.connectPeripheralDelegate.didRestorePeripheral(peripheral)
+            }
+        }
     }
 
 }
