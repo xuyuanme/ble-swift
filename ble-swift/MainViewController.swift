@@ -60,15 +60,18 @@ class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPer
         selectedPeripheral.removeAll(keepCapacity: false)
         selectedPeripheral[peripheral.cbPeripheral] = peripheral
         CentralManager.sharedInstance().connectPeripheral(peripheral)
+        dispatch_async(dispatch_get_main_queue(), {
+            self.isPeripheralConnected = true
+            self.title = "Connecting..."
+            self.connectBarButton.title = "Disconnect"
+        })
     }
     
     // MARK: ConnectPeripheralProtocol
     func didConnectPeripheral(cbPeripheral: CBPeripheral!) {
         Logger.debug("MainViewController#didConnectPeripheral \(cbPeripheral.name)")
         dispatch_async(dispatch_get_main_queue(), {
-            self.isPeripheralConnected = true
             self.title = cbPeripheral.name
-            self.connectBarButton.title = "Disconnect"
         })
         // Start to read data
         if let peripheral = self.selectedPeripheral[cbPeripheral] {

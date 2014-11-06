@@ -12,12 +12,14 @@ import CoreBluetooth
 var thisCentralManager : CentralManager?
 
 protocol ConnectPeripheralProtocol {
+    var serviceUUIDString:String {get}
     func didConnectPeripheral(cbPeripheral:CBPeripheral!)
     func didDisconnectPeripheral(cbPeripheral:CBPeripheral!, error:NSError!, userClickedCancel:Bool)
     func didRestorePeripheral(peripheral:Peripheral)
 }
 
 public class CentralManager : NSObject, CBCentralManagerDelegate {
+    let STORED_PERIPHERAL_IDENTIFIER = "STORED_PERIPHERAL_IDENTIFIER"
     var connectPeripheralDelegate : ConnectPeripheralProtocol!
     
     private let cbCentralManager : CBCentralManager!
@@ -76,11 +78,52 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
         Logger.debug("CentralManager#cancelPeripheralConnection")
         self.cbCentralManager.cancelPeripheralConnection(peripheral.cbPeripheral)
         self.userClickedCancel = userClickedCancel
+        if (userClickedCancel) {
+            var userDefaults = NSUserDefaults.standardUserDefaults()
+            userDefaults.setObject(nil, forKey: STORED_PERIPHERAL_IDENTIFIER)
+            userDefaults.synchronize()
+        }
     }
 
     // MARK: CBCentralManagerDelegate
-    public func centralManagerDidUpdateState(_:CBCentralManager!) {
-        Logger.debug("CentralManager#centralManagerDidUpdateState: \(self.cbCentralManager.state)")
+    public func centralManagerDidUpdateState(central:CBCentralManager!) {
+        var statusText:String
+        
+        switch central.state {
+        case CBCentralManagerState.PoweredOn:
+            statusText = "Bluetooth powered on."
+            var userDefaults = NSUserDefaults.standardUserDefaults()
+            var peripheralUUID = userDefaults.stringForKey(STORED_PERIPHERAL_IDENTIFIER)
+            if (peripheralUUID != nil) {
+                Logger.debug("CentralManager#retrievePeripheralsWithIdentifiers \(peripheralUUID)")
+                Utils.sendNotification("CentralManager#retrievePeripheralsWithIdentifiers \(peripheralUUID)", soundName: "")
+                for p:AnyObject in central.retrievePeripheralsWithIdentifiers([CBUUID(string: peripheralUUID)]) {
+                    if p is CBPeripheral {
+                        peripheralFound(p as CBPeripheral)
+                        return
+                    }
+                }
+                Logger.debug("CentralManager#retrieveConnectedPeripheralsWithServices")
+                for p:AnyObject in central.retrieveConnectedPeripheralsWithServices([CBUUID(string: self.connectPeripheralDelegate.serviceUUIDString)]) {
+                    if p is CBPeripheral {
+                        peripheralFound(p as CBPeripheral)
+                        return
+                    }
+                }
+            }
+        case CBCentralManagerState.PoweredOff:
+            statusText = "Bluetooth powered off."
+        case CBCentralManagerState.Unsupported:
+            statusText = "Bluetooth low energy hardware not supported."
+        case CBCentralManagerState.Unauthorized:
+            statusText = "Bluetooth unauthorized state."
+        case CBCentralManagerState.Unknown:
+            statusText = "Bluetooth unknown state."
+        default:
+            statusText = "Bluetooth unknown state."
+        }
+        
+        Logger.debug("CentralManager#centralManagerDidUpdateState: \(statusText)")
     }
     
     public func centralManager(_:CBCentralManager!, didDiscoverPeripheral cbPeripheral:CBPeripheral!, advertisementData:NSDictionary!, RSSI:NSNumber!) {
@@ -92,6 +135,11 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
     
     public func centralManager(_:CBCentralManager!, didConnectPeripheral peripheral:CBPeripheral!) {
         Logger.debug("CentralManager#didConnectPeripheral")
+        
+        var userDefaults = NSUserDefaults.standardUserDefaults()
+        userDefaults.setObject(peripheral.identifier.UUIDString as String, forKey: STORED_PERIPHERAL_IDENTIFIER)
+        userDefaults.synchronize()
+        
         if let connectPeripheralDelegate = self.connectPeripheralDelegate {
             connectPeripheralDelegate.didConnectPeripheral(peripheral)
         }
@@ -119,11 +167,15 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
     
     public func centralManager(_:CBCentralManager!, willRestoreState dict:NSDictionary!) {
         if let peripherals:[CBPeripheral] = dict[CBCentralManagerRestoredStatePeripheralsKey] as [CBPeripheral]! {
-            if (peripherals.count > 0) {
-                var peripheral:Peripheral = Peripheral(cbPeripheral: peripherals[0], advertisements:[:], rssi:0)
-                self.connectPeripheralDelegate.didRestorePeripheral(peripheral)
-            }
+            Logger.debug("CentralManager#willRestoreState")
         }
+    }
+
+    // MARK: Private
+    private func peripheralFound(cbPeripheral: CBPeripheral) {
+        Logger.debug("CentralManager#peripheralFound \(cbPeripheral.name)")
+        var peripheral:Peripheral = Peripheral(cbPeripheral: cbPeripheral, advertisements:[:], rssi:0)
+        self.connectPeripheralDelegate.didRestorePeripheral(peripheral)
     }
 
 }
