@@ -117,24 +117,28 @@ class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPer
         var crankRevolutions:UInt16 = 0
         var lastCrankEventTime:UInt16 = 0
         
-        var data = characteristic.value
-        data.getBytes(&flags, range: NSRange(location: 0, length: 1))
-        
-        if (flags & wheelFlag == wheelFlag) {
-            data.getBytes(&wheelRevolutions, range: NSRange(location: 1, length: 4))
-            data.getBytes(&lastWheelEventTime, range: NSRange(location: 5, length: 2))
-            data.getBytes(&crankRevolutions, range: NSRange(location: 7, length: 2))
-            data.getBytes(&lastCrankEventTime, range: NSRange(location: 9, length: 2))
-        } else if (flags & crankFlag == crankFlag) {
-            data.getBytes(&crankRevolutions, range: NSRange(location: 1, length: 2))
-            data.getBytes(&lastCrankEventTime, range: NSRange(location: 3, length: 2))
+        if (error == nil) {
+            var data = characteristic.value
+            data.getBytes(&flags, range: NSRange(location: 0, length: 1))
+            
+            if (flags & wheelFlag == wheelFlag) {
+                data.getBytes(&wheelRevolutions, range: NSRange(location: 1, length: 4))
+                data.getBytes(&lastWheelEventTime, range: NSRange(location: 5, length: 2))
+                data.getBytes(&crankRevolutions, range: NSRange(location: 7, length: 2))
+                data.getBytes(&lastCrankEventTime, range: NSRange(location: 9, length: 2))
+            } else if (flags & crankFlag == crankFlag) {
+                data.getBytes(&crankRevolutions, range: NSRange(location: 1, length: 2))
+                data.getBytes(&lastCrankEventTime, range: NSRange(location: 3, length: 2))
+            }
+            
+            Logger.debug("\(wheelRevolutions)")
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                self.wheelValueLabel.text = String(wheelRevolutions)
+            })
+        } else {
+            Logger.debug("MainViewController#didUpdateValueForCharacteristic error: \(error)")
         }
-        
-        Logger.debug("\(wheelRevolutions)")
-        
-        dispatch_async(dispatch_get_main_queue(), {
-            self.wheelValueLabel.text = String(wheelRevolutions)
-        })
     }
 
 }

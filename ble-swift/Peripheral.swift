@@ -76,11 +76,13 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
     
     // services
     public func peripheral(peripheral:CBPeripheral!, didDiscoverServices error:NSError!) {
-        Logger.debug("Peripheral#didDiscoverServices: \(self.name)")
-        if let delegate:ReadPeripheralProtocol = self.readPeripheralDelegate {
-            for service:CBService in peripheral.services as [CBService]! {
-                if (service.UUID.UUIDString == delegate.serviceUUIDString) {
-                    peripheral.discoverCharacteristics([CBUUID(string: delegate.characteristicUUIDString)], forService: service)
+        Logger.debug("Peripheral#didDiscoverServices: \(self.name) error: \(error)")
+        if (error == nil) {
+            if let delegate:ReadPeripheralProtocol = self.readPeripheralDelegate {
+                for service:CBService in peripheral.services as [CBService]! {
+                    if (service.UUID.UUIDString == delegate.serviceUUIDString) {
+                        peripheral.discoverCharacteristics([CBUUID(string: delegate.characteristicUUIDString)], forService: service)
+                    }
                 }
             }
         }
@@ -92,11 +94,13 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
     
     // characteristics
     public func peripheral(_:CBPeripheral!, didDiscoverCharacteristicsForService service:CBService!, error:NSError!) {
-        Logger.debug("Peripheral#didDiscoverCharacteristicsForService: \(self.name)")
-        if let delegate:ReadPeripheralProtocol = self.readPeripheralDelegate {
-            for characteristic:CBCharacteristic in service.characteristics as [CBCharacteristic]! {
-                if (characteristic.UUID.UUIDString == delegate.characteristicUUIDString) {
-                    cbPeripheral.setNotifyValue(true, forCharacteristic: characteristic)
+        Logger.debug("Peripheral#didDiscoverCharacteristicsForService: \(self.name) error: \(error)")
+        if (error == nil) {
+            if let delegate:ReadPeripheralProtocol = self.readPeripheralDelegate {
+                for characteristic:CBCharacteristic in service.characteristics as [CBCharacteristic]! {
+                    if (characteristic.UUID.UUIDString == delegate.characteristicUUIDString) {
+                        cbPeripheral.setNotifyValue(true, forCharacteristic: characteristic)
+                    }
                 }
             }
         }
