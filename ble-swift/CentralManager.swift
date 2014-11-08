@@ -23,7 +23,7 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
     var connectPeripheralDelegate : ConnectPeripheralProtocol!
     
     private let cbCentralManager : CBCentralManager!
-    private let centralQueue = dispatch_queue_create("me.xuyuan.ble", DISPATCH_QUEUE_SERIAL)
+    private let centralQueue = dispatch_queue_create("me.xuyuan.ble.central.main", DISPATCH_QUEUE_SERIAL)
     private var _isScanning = false
     private var userClickedCancel = false
     private var afterPeripheralDiscovered : ((cbPeripheral:CBPeripheral, advertisementData:NSDictionary, RSSI:NSNumber)->())?
@@ -45,7 +45,7 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
     // MARK: Public
     // scanning
     public func startScanning(afterPeripheralDiscovered:(cbPeripheral:CBPeripheral, advertisementData:NSDictionary, RSSI:NSNumber)->(), allowDuplicatesKey:Bool) {
-        self.startScanningForServiceUUIDs(nil, afterPeripheralDiscovered: afterPeripheralDiscovered, allowDuplicatesKey: allowDuplicatesKey)
+        self.startScanningForServiceUUIDs([CBUUID(string: connectPeripheralDelegate.serviceUUIDString)], afterPeripheralDiscovered: afterPeripheralDiscovered, allowDuplicatesKey: allowDuplicatesKey)
     }
     
     public func startScanningForServiceUUIDs(uuids:[CBUUID]!, afterPeripheralDiscovered:(cbPeripheral:CBPeripheral, advertisementData:NSDictionary, RSSI:NSNumber)->(), allowDuplicatesKey:Bool) {

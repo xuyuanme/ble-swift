@@ -89,7 +89,7 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
     }
     
     public func peripheral(_:CBPeripheral!, didDiscoverIncludedServicesForService service:CBService!, error:NSError!) {
-        Logger.debug("Peripheral#didDiscoverIncludedServicesForService: \(self.name)")
+        Logger.debug("Peripheral#didDiscoverIncludedServicesForService: \(self.name) error: \(error)")
     }
     
     // characteristics
@@ -99,7 +99,11 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
             if let delegate:ReadPeripheralProtocol = self.readPeripheralDelegate {
                 for characteristic:CBCharacteristic in service.characteristics as [CBCharacteristic]! {
                     if (characteristic.UUID.UUIDString == delegate.characteristicUUIDString) {
-                        cbPeripheral.setNotifyValue(true, forCharacteristic: characteristic)
+                        if (characteristic.properties.rawValue & CBCharacteristicProperties.Notify.rawValue > 0) {
+                            cbPeripheral.setNotifyValue(true, forCharacteristic: characteristic)
+                        } else if (characteristic.properties.rawValue & CBCharacteristicProperties.Read.rawValue > 0) {
+                            cbPeripheral.readValueForCharacteristic(characteristic)
+                        }
                     }
                 }
             }
@@ -107,7 +111,7 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
     }
     
     public func peripheral(_:CBPeripheral!, didUpdateNotificationStateForCharacteristic characteristic:CBCharacteristic!, error:NSError!) {
-        Logger.debug("Peripheral#didUpdateNotificationStateForCharacteristic")
+        Logger.debug("Peripheral#didUpdateNotificationStateForCharacteristic error: \(error)")
     }
     
     public func peripheral(_:CBPeripheral!, didUpdateValueForCharacteristic characteristic:CBCharacteristic!, error:NSError!) {
@@ -118,20 +122,20 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
     }
     
     public func peripheral(_:CBPeripheral!, didWriteValueForCharacteristic characteristic:CBCharacteristic!, error: NSError!) {
-        Logger.debug("Peripheral#didWriteValueForCharacteristic")
+        Logger.debug("Peripheral#didWriteValueForCharacteristic error: \(error)")
     }
     
     // descriptors
     public func peripheral(_:CBPeripheral!, didDiscoverDescriptorsForCharacteristic characteristic:CBCharacteristic!, error:NSError!) {
-        Logger.debug("Peripheral#didDiscoverDescriptorsForCharacteristic")
+        Logger.debug("Peripheral#didDiscoverDescriptorsForCharacteristic error: \(error)")
     }
     
     public func peripheral(_:CBPeripheral!, didUpdateValueForDescriptor descriptor:CBDescriptor!, error:NSError!) {
-        Logger.debug("Peripheral#didUpdateValueForDescriptor")
+        Logger.debug("Peripheral#didUpdateValueForDescriptor error: \(error)")
     }
     
     public func peripheral(_:CBPeripheral!, didWriteValueForDescriptor descriptor:CBDescriptor!, error:NSError!) {
-        Logger.debug("Peripheral#didWriteValueForDescriptor")
+        Logger.debug("Peripheral#didWriteValueForDescriptor error: \(error)")
     }
     
 }
