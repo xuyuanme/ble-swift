@@ -58,7 +58,7 @@ class SelectPeripheralViewController: UITableViewController {
     override func tableView(tableView:UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("PeripheralCell", forIndexPath: indexPath) as UITableViewCell
         let peripheral = self.discoveredPeripherals.values.array[indexPath.row]
-        cell.textLabel.text = peripheral.name
+        cell.textLabel!.text = peripheral.name
         return cell
     }
     

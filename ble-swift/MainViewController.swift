@@ -111,6 +111,7 @@ class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPer
     }
     
     // MARK: CreatePeripheralProtocol
+    // Received read request from central, should return value base on "request.characteristic.UUID" value
     func didReceiveReadRequest(peripheralManager:CBPeripheralManager!, didReceiveReadRequest request:CBATTRequest!) {
         request.value = NSData(data: "ABC".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!)
         peripheralManager.respondToRequest(request, withResult: CBATTError.Success)
@@ -120,6 +121,7 @@ class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPer
     var wheelFlag:UInt8 = 0x01
     var crankFlag:UInt8 = 0x02
     
+    // Characteristic value is updated, update the UI accordingly
     func didUpdateValueForCharacteristic(characteristic: CBCharacteristic!, error: NSError!) {
         var flags:UInt8 = 0
         var wheelRevolutions:UInt32 = 0
@@ -129,7 +131,7 @@ class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPer
         
         if (error == nil) {
             var data = characteristic.value
-            // CSC Data
+            // If it's CSC Peripheral Data
             if (self.serviceUUIDString == "1816" && self.characteristicUUIDString == "2A5B") {
                 data.getBytes(&flags, range: NSRange(location: 0, length: 1))
                 
@@ -149,6 +151,7 @@ class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPer
                     self.wheelValueLabel.text = String(wheelRevolutions)
                 })
             } else {
+                // Else assume it's sample data from bleapp's Peripheral
                 dispatch_async(dispatch_get_main_queue(), {
                     self.wheelValueLabel.text = NSString(data: data, encoding: NSUTF8StringEncoding)
                 })
