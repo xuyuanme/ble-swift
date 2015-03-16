@@ -18,6 +18,20 @@
 		1C502B0919FA46C000999451 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C502B0819FA46C000999451 /* Logger.swift */; };
 		1C502B0D19FC9EB400999451 /* SelectPeripheralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C502B0C19FC9EB400999451 /* SelectPeripheralViewController.swift */; };
 		1C52BD6E1A0DC3110047735A /* PeripheralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C52BD6D1A0DC3110047735A /* PeripheralManager.swift */; };
+		1C9CB0631AB6B4E90061A166 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB0611AB6B4E90061A166 /* Bolts.framework */; };
+		1C9CB0641AB6B4E90061A166 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB0621AB6B4E90061A166 /* Parse.framework */; };
+		1C9CB0661AB6B5450061A166 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB0651AB6B5450061A166 /* AudioToolbox.framework */; };
+		1C9CB0681AB6B54E0061A166 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB0671AB6B54E0061A166 /* CFNetwork.framework */; };
+		1C9CB06A1AB6B5580061A166 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB0691AB6B5580061A166 /* CoreGraphics.framework */; };
+		1C9CB06C1AB6B5600061A166 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB06B1AB6B5600061A166 /* CoreLocation.framework */; };
+		1C9CB06E1AB6B56B0061A166 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB06D1AB6B56B0061A166 /* MobileCoreServices.framework */; };
+		1C9CB0701AB6B5740061A166 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB06F1AB6B5740061A166 /* QuartzCore.framework */; };
+		1C9CB0721AB6B57C0061A166 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB0711AB6B57C0061A166 /* Security.framework */; };
+		1C9CB0741AB6B5840061A166 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB0731AB6B5840061A166 /* StoreKit.framework */; };
+		1C9CB0761AB6B5900061A166 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB0751AB6B5900061A166 /* SystemConfiguration.framework */; };
+		1C9CB0781AB6B59A0061A166 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB0771AB6B59A0061A166 /* libz.dylib */; };
+		1C9CB07A1AB6B5AD0061A166 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB0791AB6B5AD0061A166 /* libsqlite3.dylib */; };
+		1C9CB07E1AB6D8430061A166 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C9CB07D1AB6D8430061A166 /* Keys.plist */; };
 		1CB4175D1A050EA2004F1AF8 /* Peripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB4175C1A050EA2004F1AF8 /* Peripheral.swift */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +51,20 @@
 		1C502B0819FA46C000999451 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		1C502B0C19FC9EB400999451 /* SelectPeripheralViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectPeripheralViewController.swift; sourceTree = "<group>"; };
 		1C52BD6D1A0DC3110047735A /* PeripheralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralManager.swift; sourceTree = "<group>"; };
+		1C9CB0611AB6B4E90061A166 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
+		1C9CB0621AB6B4E90061A166 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		1C9CB0651AB6B5450061A166 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		1C9CB0671AB6B54E0061A166 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		1C9CB0691AB6B5580061A166 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		1C9CB06B1AB6B5600061A166 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		1C9CB06D1AB6B56B0061A166 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		1C9CB06F1AB6B5740061A166 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		1C9CB0711AB6B57C0061A166 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		1C9CB0731AB6B5840061A166 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		1C9CB0751AB6B5900061A166 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		1C9CB0771AB6B59A0061A166 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		1C9CB0791AB6B5AD0061A166 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		1C9CB07D1AB6D8430061A166 /* Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
 		1CB4175C1A050EA2004F1AF8 /* Peripheral.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Peripheral.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -45,7 +73,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C9CB07A1AB6B5AD0061A166 /* libsqlite3.dylib in Frameworks */,
+				1C9CB0781AB6B59A0061A166 /* libz.dylib in Frameworks */,
+				1C9CB0761AB6B5900061A166 /* SystemConfiguration.framework in Frameworks */,
+				1C9CB0741AB6B5840061A166 /* StoreKit.framework in Frameworks */,
+				1C9CB0721AB6B57C0061A166 /* Security.framework in Frameworks */,
+				1C9CB0701AB6B5740061A166 /* QuartzCore.framework in Frameworks */,
+				1C9CB06E1AB6B56B0061A166 /* MobileCoreServices.framework in Frameworks */,
+				1C9CB06C1AB6B5600061A166 /* CoreLocation.framework in Frameworks */,
+				1C9CB06A1AB6B5580061A166 /* CoreGraphics.framework in Frameworks */,
+				1C9CB0681AB6B54E0061A166 /* CFNetwork.framework in Frameworks */,
+				1C9CB0661AB6B5450061A166 /* AudioToolbox.framework in Frameworks */,
 				1C124BE419F545F400CCB571 /* CoreBluetooth.framework in Frameworks */,
+				1C9CB0641AB6B4E90061A166 /* Parse.framework in Frameworks */,
+				1C9CB0631AB6B4E90061A166 /* Bolts.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,7 +98,7 @@
 			children = (
 				1C49669219F4B3B200B96165 /* ble-swift */,
 				1C4966A819F4B3B200B96165 /* ble-swiftTests */,
-				1C124BE319F545F400CCB571 /* CoreBluetooth.framework */,
+				1C9CB07F1AB6DA2A0061A166 /* Frameworks */,
 				1C49669119F4B3B200B96165 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -91,6 +132,7 @@
 		1C49669319F4B3B200B96165 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				1C9CB07D1AB6D8430061A166 /* Keys.plist */,
 				1C49669419F4B3B200B96165 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -120,6 +162,27 @@
 				1C502B0819FA46C000999451 /* Logger.swift */,
 			);
 			name = Utilities;
+			sourceTree = "<group>";
+		};
+		1C9CB07F1AB6DA2A0061A166 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1C9CB0791AB6B5AD0061A166 /* libsqlite3.dylib */,
+				1C9CB0771AB6B59A0061A166 /* libz.dylib */,
+				1C9CB0751AB6B5900061A166 /* SystemConfiguration.framework */,
+				1C9CB0731AB6B5840061A166 /* StoreKit.framework */,
+				1C9CB0711AB6B57C0061A166 /* Security.framework */,
+				1C9CB06F1AB6B5740061A166 /* QuartzCore.framework */,
+				1C9CB06D1AB6B56B0061A166 /* MobileCoreServices.framework */,
+				1C9CB06B1AB6B5600061A166 /* CoreLocation.framework */,
+				1C9CB0691AB6B5580061A166 /* CoreGraphics.framework */,
+				1C9CB0671AB6B54E0061A166 /* CFNetwork.framework */,
+				1C9CB0651AB6B5450061A166 /* AudioToolbox.framework */,
+				1C124BE319F545F400CCB571 /* CoreBluetooth.framework */,
+				1C9CB0611AB6B4E90061A166 /* Bolts.framework */,
+				1C9CB0621AB6B4E90061A166 /* Parse.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -185,6 +248,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C9CB07E1AB6D8430061A166 /* Keys.plist in Resources */,
 				1C49669B19F4B3B200B96165 /* Main.storyboard in Resources */,
 				1C4966A019F4B3B200B96165 /* LaunchScreen.xib in Resources */,
 				1C49669D19F4B3B200B96165 /* Images.xcassets in Resources */,
@@ -321,6 +385,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "ble-swift/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -335,6 +403,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "ble-swift/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

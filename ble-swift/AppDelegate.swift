@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import Parse
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate, UIAlertViewDelegate {
@@ -57,6 +58,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
         // Initialize the Location Manager
         initLocationManager()
+        
+        var myDict: NSDictionary?
+        if let path = NSBundle.mainBundle().pathForResource("Keys", ofType: "plist") {
+            myDict = NSDictionary(contentsOfFile: path)
+        }
+        if let dict = myDict {
+            Parse.setApplicationId(dict["ApplicationId"] as String, clientKey: dict["ClientKey"] as String)
+        }
 
         return true
     }
@@ -89,6 +98,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             .stringByReplacingOccurrencesOfString(" ", withString: "") as String
         
         Logger.debug("didRegisterForRemoteNotificationsWithDeviceToken \(deviceTokenString)")
+        
+        var currentInstallation = PFInstallation.currentInstallation()
+        currentInstallation.setDeviceTokenFromData(deviceToken)
+        currentInstallation.saveInBackgroundWithBlock(nil)
     }
     
     func application(application: UIApplication!, didFailToRegisterForRemoteNotificationsWithError error: NSError!) {
@@ -113,6 +126,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         } else {
             // Background or Not Running
             Logger.debug(notification)
+        }
+        
+        if(application.applicationState == UIApplicationState.Inactive) {
+            // The application was just brought from the background to the foreground,
+            // so we consider the app as having been "opened by a push notification."
+            PFAnalytics.trackAppOpenedWithRemoteNotificationPayloadInBackground(remoteNotification, block: nil);
         }
 
         handler(UIBackgroundFetchResult.NewData)
