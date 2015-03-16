@@ -114,9 +114,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         Logger.debug("didReceiveLocalNotification "+localNotification.alertBody!)
         // Utils.showAlert("didReceiveLocalNotification \(localNotification.alertBody!)")
     }
-
-    func application(application: UIApplication!, didReceiveRemoteNotification remoteNotification:NSDictionary!, fetchCompletionHandler handler:(UIBackgroundFetchResult) -> Void) {
-        var notification:NSDictionary = remoteNotification.objectForKey("aps") as NSDictionary
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        var notification:NSDictionary = userInfo["aps"] as NSDictionary
         var alert:String = notification.objectForKey("alert") as String
         
         if (application.applicationState == UIApplicationState.Active || application.applicationState == UIApplicationState.Inactive) {
@@ -131,9 +131,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if(application.applicationState == UIApplicationState.Inactive) {
             // The application was just brought from the background to the foreground,
             // so we consider the app as having been "opened by a push notification."
-            PFAnalytics.trackAppOpenedWithRemoteNotificationPayloadInBackground(remoteNotification, block: nil);
+            PFAnalytics.trackAppOpenedWithRemoteNotificationPayloadInBackground(userInfo, block: nil);
         }
+    }
 
+    func application(application: UIApplication!, didReceiveRemoteNotification userInfo:[NSObject : AnyObject], fetchCompletionHandler handler:(UIBackgroundFetchResult) -> Void) {
+        self.application(application, didReceiveRemoteNotification: userInfo)
         handler(UIBackgroundFetchResult.NewData)
     }
 
