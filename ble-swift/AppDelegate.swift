@@ -9,12 +9,18 @@
 import UIKit
 import CoreLocation
 import Parse
+import CoreBluetooth
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate, UIAlertViewDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate, UIAlertViewDelegate, CreatePeripheralProtocol, ConnectPeripheralProtocol, ReadPeripheralProtocol {
 
     var window: UIWindow?
     var locationManager: CLLocationManager!
+    
+    var serviceUUIDString:String = ""
+    var characteristicUUIDString:String = ""
+    
+    var selectedPeripheral : Dictionary<CBPeripheral, Peripheral> = [:]
 
     // MARK: UIApplicationDelegate
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -59,13 +65,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // Initialize the Location Manager
         initLocationManager()
         
-        var myDict: NSDictionary?
-        if let path = NSBundle.mainBundle().pathForResource("Keys", ofType: "plist") {
-            myDict = NSDictionary(contentsOfFile: path)
-        }
-        if let dict = myDict {
-            Parse.setApplicationId(dict["ApplicationId"] as String, clientKey: dict["ClientKey"] as String)
-        }
+        initParse()
+        
+        initBluetooth()
 
         return true
     }
@@ -89,6 +91,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             }
         }
         locationManager.startMonitoringSignificantLocationChanges()
+    }
+    
+    func initParse() {
+        var myDict: NSDictionary?
+        if let path = NSBundle.mainBundle().pathForResource("Keys", ofType: "plist") {
+            myDict = NSDictionary(contentsOfFile: path)
+        }
+        if let dict = myDict {
+            Parse.setApplicationId(dict["ApplicationId"] as String, clientKey: dict["ClientKey"] as String)
+        }
+    }
+    
+    func initBluetooth() {
+        var myDict: NSDictionary?
+        if let path = NSBundle.mainBundle().pathForResource("Keys", ofType: "plist") {
+            myDict = NSDictionary(contentsOfFile: path)
+        }
+        if let dict = myDict {
+            self.serviceUUIDString = dict["ServiceUUIDString"] as String
+            self.characteristicUUIDString = dict["NameCharacteristicUUIDString"] as String
+        }
+        
+        CentralManager.sharedInstance().connectPeripheralDelegate = self
+        PeripheralManager.sharedInstance().createPeripheralDelegate = self
+        
+        var timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("startScanPeripheral"), userInfo: nil, repeats: false)
     }
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
@@ -174,6 +202,51 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             var settingURL = NSURL(string: UIApplicationOpenSettingsURLString)
             UIApplication.sharedApplication().openURL(settingURL!)
         }
+    }
+    
+    // MARK: CreatePeripheralProtocol
+    func didReceiveReadRequest(peripheralManager: CBPeripheralManager!, didReceiveReadRequest request: CBATTRequest!) {
+        if(request.characteristic.UUID.UUIDString == self.characteristicUUIDString) {
+            request.value = NSData(data: "ABC".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!)
+            peripheralManager.respondToRequest(request, withResult: CBATTError.Success)
+        }
+    }
+    
+    // MARK: ConnectPeripheralProtocol
+    func didConnectPeripheral(cbPeripheral: CBPeripheral!) {
+        Logger.debug("AppDelegate#didConnectPeripheral \(cbPeripheral.name)")
+        if let peripheral = self.selectedPeripheral[cbPeripheral] {
+            peripheral.discoverServices([CBUUID(string: serviceUUIDString)], delegate: self)
+        }
+    }
+    
+    func didDisconnectPeripheral(cbPeripheral: CBPeripheral!, error: NSError!, userClickedCancel: Bool) {
+        Logger.debug("AppDelegate#didDisconnectPeripheral \(cbPeripheral.name)")
+    }
+    
+    func didRestorePeripheral(peripheral: Peripheral) {
+        Logger.debug("AppDelegate#didRestorePeripheral \(peripheral.name)")
+    }
+    
+    // MARK: ReadPeripheralProtocol
+    func didUpdateValueForCharacteristic(cbPeripheral: CBPeripheral!, characteristic: CBCharacteristic!, error: NSError!) {
+        Logger.debug("AppDelegate#didUpdateValueForCharacteristic \(NSString(data: characteristic.value, encoding: NSUTF8StringEncoding))")
+        Utils.sendNotification("\(NSString(data: characteristic.value, encoding: NSUTF8StringEncoding))", soundName: "")
+        if let peripheral = self.selectedPeripheral[cbPeripheral] {
+            CentralManager.sharedInstance().cancelPeripheralConnection(peripheral, userClickedCancel: true);
+        }
+    }
+    
+    // MARK: Private
+    func startScanPeripheral() {
+        CentralManager.sharedInstance().startScanning(afterPeripheralDiscovered, allowDuplicatesKey: false)
+    }
+    
+    private func afterPeripheralDiscovered(cbPeripheral:CBPeripheral, advertisementData:NSDictionary, RSSI:NSNumber) {
+        let peripheral = Peripheral(cbPeripheral:cbPeripheral, advertisements:advertisementData, rssi:RSSI.integerValue)
+        Logger.debug("AppDelegate#afterPeripheralDiscovered: Connect peripheral \(peripheral.name)")
+        CentralManager.sharedInstance().connectPeripheral(peripheral)
+        selectedPeripheral[peripheral.cbPeripheral] = peripheral
     }
 
 }

@@ -12,7 +12,7 @@ import CoreBluetooth
 protocol ReadPeripheralProtocol {
     var serviceUUIDString:String {get}
     var characteristicUUIDString:String {get}
-    func didUpdateValueForCharacteristic(characteristic:CBCharacteristic!, error:NSError!)
+    func didUpdateValueForCharacteristic(cbPeripheral: CBPeripheral!, characteristic:CBCharacteristic!, error:NSError!)
 }
 
 public class Peripheral : NSObject, CBPeripheralDelegate {
@@ -114,10 +114,10 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
         Logger.debug("Peripheral#didUpdateNotificationStateForCharacteristic error: \(error)")
     }
     
-    public func peripheral(_:CBPeripheral!, didUpdateValueForCharacteristic characteristic:CBCharacteristic!, error:NSError!) {
+    public func peripheral(peripheral:CBPeripheral!, didUpdateValueForCharacteristic characteristic:CBCharacteristic!, error:NSError!) {
         // Logger.debug("Peripheral#didUpdateValueForCharacteristic")
         if let delegate:ReadPeripheralProtocol = self.readPeripheralDelegate {
-            delegate.didUpdateValueForCharacteristic(characteristic, error: error)
+            delegate.didUpdateValueForCharacteristic(peripheral, characteristic: characteristic, error: error)
         }
     }
     

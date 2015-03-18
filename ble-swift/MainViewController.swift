@@ -122,7 +122,7 @@ class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPer
     var crankFlag:UInt8 = 0x02
     
     // Characteristic value is updated, update the UI accordingly
-    func didUpdateValueForCharacteristic(characteristic: CBCharacteristic!, error: NSError!) {
+    func didUpdateValueForCharacteristic(cbPeripheral: CBPeripheral!, characteristic: CBCharacteristic!, error: NSError!) {
         var flags:UInt8 = 0
         var wheelRevolutions:UInt32 = 0
         var lastWheelEventTime:UInt16 = 0
