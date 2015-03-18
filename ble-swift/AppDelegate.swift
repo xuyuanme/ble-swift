@@ -115,8 +115,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         
         CentralManager.sharedInstance().connectPeripheralDelegate = self
         PeripheralManager.sharedInstance().createPeripheralDelegate = self
-        
-        var timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("startScanPeripheral"), userInfo: nil, repeats: false)
     }
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
@@ -228,20 +226,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         Logger.debug("AppDelegate#didRestorePeripheral \(peripheral.name)")
     }
     
+    func bluetoothBecomeAvailable() {
+        CentralManager.sharedInstance().startScanning(afterPeripheralDiscovered, allowDuplicatesKey: false)
+    }
+    
+    func bluetoothBecomeUnavailable() {
+        CentralManager.sharedInstance().stopScanning()
+    }
+    
     // MARK: ReadPeripheralProtocol
     func didUpdateValueForCharacteristic(cbPeripheral: CBPeripheral!, characteristic: CBCharacteristic!, error: NSError!) {
-        Logger.debug("AppDelegate#didUpdateValueForCharacteristic \(NSString(data: characteristic.value, encoding: NSUTF8StringEncoding))")
-        Utils.sendNotification("\(NSString(data: characteristic.value, encoding: NSUTF8StringEncoding))", soundName: "")
+        if let data = characteristic.value {
+            Logger.debug("AppDelegate#didUpdateValueForCharacteristic \(NSString(data: data, encoding: NSUTF8StringEncoding))")
+            Utils.sendNotification("\(NSString(data: data, encoding: NSUTF8StringEncoding))", soundName: "")
+        }
         if let peripheral = self.selectedPeripheral[cbPeripheral] {
             CentralManager.sharedInstance().cancelPeripheralConnection(peripheral, userClickedCancel: true);
         }
     }
     
     // MARK: Private
-    func startScanPeripheral() {
-        CentralManager.sharedInstance().startScanning(afterPeripheralDiscovered, allowDuplicatesKey: false)
-    }
-    
     private func afterPeripheralDiscovered(cbPeripheral:CBPeripheral, advertisementData:NSDictionary, RSSI:NSNumber) {
         let peripheral = Peripheral(cbPeripheral:cbPeripheral, advertisements:advertisementData, rssi:RSSI.integerValue)
         Logger.debug("AppDelegate#afterPeripheralDiscovered: Connect peripheral \(peripheral.name)")

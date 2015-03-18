@@ -16,6 +16,8 @@ protocol ConnectPeripheralProtocol {
     func didConnectPeripheral(cbPeripheral:CBPeripheral!)
     func didDisconnectPeripheral(cbPeripheral:CBPeripheral!, error:NSError!, userClickedCancel:Bool)
     func didRestorePeripheral(peripheral:Peripheral)
+    func bluetoothBecomeAvailable()
+    func bluetoothBecomeUnavailable()
 }
 
 public class CentralManager : NSObject, CBCentralManagerDelegate {
@@ -24,7 +26,7 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
     
     private let cbCentralManager : CBCentralManager!
     private let centralQueue = dispatch_queue_create("me.xuyuan.ble.central.main", DISPATCH_QUEUE_SERIAL)
-    private var _isScanning = false
+    private var isScanning = false
     private var userClickedCancel = false
     private var afterPeripheralDiscovered : ((cbPeripheral:CBPeripheral, advertisementData:NSDictionary, RSSI:NSNumber)->())?
 
@@ -49,18 +51,18 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
     }
     
     public func startScanningForServiceUUIDs(uuids:[CBUUID]!, afterPeripheralDiscovered:(cbPeripheral:CBPeripheral, advertisementData:NSDictionary, RSSI:NSNumber)->(), allowDuplicatesKey:Bool) {
-        if !self._isScanning {
+        if (!self.isScanning) {
             Logger.debug("CentralManager#startScanningForServiceUUIDs: \(uuids) allowDuplicatesKey: \(allowDuplicatesKey)")
-            self._isScanning = true
+            self.isScanning = true
             self.afterPeripheralDiscovered = afterPeripheralDiscovered
             self.cbCentralManager.scanForPeripheralsWithServices(uuids,options: [CBCentralManagerScanOptionAllowDuplicatesKey: allowDuplicatesKey])
         }
     }
     
     public func stopScanning() {
-        if self._isScanning {
+        if (self.isScanning) {
             Logger.debug("CentralManager#stopScanning")
-            self._isScanning = false
+            self.isScanning = false
             self.cbCentralManager.stopScan()
         }
     }
@@ -92,6 +94,7 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
         switch central.state {
         case CBCentralManagerState.PoweredOn:
             statusText = "Bluetooth powered on."
+            connectPeripheralDelegate.bluetoothBecomeAvailable()
             var userDefaults = NSUserDefaults.standardUserDefaults()
             var peripheralUUID = userDefaults.stringForKey(STORED_PERIPHERAL_IDENTIFIER)
             if (peripheralUUID != nil) {
@@ -113,14 +116,19 @@ public class CentralManager : NSObject, CBCentralManagerDelegate {
             }
         case CBCentralManagerState.PoweredOff:
             statusText = "Bluetooth powered off."
+            connectPeripheralDelegate.bluetoothBecomeUnavailable()
         case CBCentralManagerState.Unsupported:
             statusText = "Bluetooth low energy hardware not supported."
+            connectPeripheralDelegate.bluetoothBecomeUnavailable()
         case CBCentralManagerState.Unauthorized:
             statusText = "Bluetooth unauthorized state."
+            connectPeripheralDelegate.bluetoothBecomeUnavailable()
         case CBCentralManagerState.Unknown:
             statusText = "Bluetooth unknown state."
+            connectPeripheralDelegate.bluetoothBecomeUnavailable()
         default:
             statusText = "Bluetooth unknown state."
+            connectPeripheralDelegate.bluetoothBecomeUnavailable()
         }
         
         Logger.debug("CentralManager#centralManagerDidUpdateState: \(statusText)")

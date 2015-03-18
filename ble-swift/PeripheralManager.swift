@@ -19,6 +19,7 @@ protocol CreatePeripheralProtocol {
 
 public class PeripheralManager : NSObject, CBPeripheralManagerDelegate {
     var createPeripheralDelegate:CreatePeripheralProtocol!
+    private var isAdvertising = false
     private let peripheralQueue = dispatch_queue_create("me.xuyuan.ble.peripheral.main", DISPATCH_QUEUE_SERIAL)
     internal var cbPeripheralManager : CBPeripheralManager!
     
@@ -39,14 +40,20 @@ public class PeripheralManager : NSObject, CBPeripheralManagerDelegate {
     // MARK: Public
     // advertising
     public func startAdvertising() {
-        Logger.debug("PeripheralManager#startAdvertising")
-        var advertisementData : [NSObject:AnyObject] = [CBAdvertisementDataServiceUUIDsKey : [CBUUID(string: self.createPeripheralDelegate.serviceUUIDString)]]
-        self.cbPeripheralManager.startAdvertising(advertisementData)
+        if(!isAdvertising) {
+            Logger.debug("PeripheralManager#startAdvertising")
+            var advertisementData : [NSObject:AnyObject] = [CBAdvertisementDataServiceUUIDsKey : [CBUUID(string: self.createPeripheralDelegate.serviceUUIDString)]]
+            self.cbPeripheralManager.startAdvertising(advertisementData)
+            isAdvertising = true
+        }
     }
     
     public func stopAdvertising(afterAdvertisingStopped:(()->())? = nil) {
-        Logger.debug("PeripheralManager#stopAdvertising")
-        self.cbPeripheralManager.stopAdvertising()
+        if(isAdvertising) {
+            Logger.debug("PeripheralManager#stopAdvertising")
+            self.cbPeripheralManager.stopAdvertising()
+            isAdvertising = false
+        }
     }
     
     // MARK: CBPeripheralManagerDelegate
@@ -56,18 +63,19 @@ public class PeripheralManager : NSObject, CBPeripheralManagerDelegate {
             Logger.debug("PeripheralManager#peripheralManagerDidUpdateState: poweredOn")
             self.cbPeripheralManager.addService(self.createPeripheralService())
             self.startAdvertising()
-            break
         case CBPeripheralManagerState.PoweredOff:
             Logger.debug("PeripheralManager#peripheralManagerDidUpdateState: poweredOff")
-            break
+            self.stopAdvertising()
         case CBPeripheralManagerState.Resetting:
-            break
+            self.stopAdvertising()
         case CBPeripheralManagerState.Unsupported:
-            break
+            self.stopAdvertising()
         case CBPeripheralManagerState.Unauthorized:
-            break
+            self.stopAdvertising()
         case CBPeripheralManagerState.Unknown:
-            break
+            self.stopAdvertising()
+        default:
+            self.stopAdvertising()
         }
     }
     

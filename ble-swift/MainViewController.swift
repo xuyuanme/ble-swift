@@ -110,6 +110,14 @@ class MainViewController: UIViewController, SelectPeripheralProtocol, ConnectPer
         self.didSelectPeripheral(peripheral)
     }
     
+    func bluetoothBecomeAvailable() {
+        
+    }
+    
+    func bluetoothBecomeUnavailable() {
+        
+    }
+    
     // MARK: CreatePeripheralProtocol
     // Received read request from central, should return value base on "request.characteristic.UUID" value
     func didReceiveReadRequest(peripheralManager:CBPeripheralManager!, didReceiveReadRequest request:CBATTRequest!) {
