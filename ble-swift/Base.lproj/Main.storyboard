@@ -31,7 +31,7 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wheel Revolutions:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bDE-rj-yAf">
                                 <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2xU-dd-b83">
@@ -40,7 +40,7 @@
                                     <constraint firstAttribute="width" constant="206" id="qAj-IB-TAm"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -152,18 +152,44 @@
             </objects>
             <point key="canvasLocation" x="785" y="108"/>
         </scene>
-        <!--View Controller-->
+        <!--Profile View Controller-->
         <scene sceneID="3NI-nC-6dj">
             <objects>
-                <viewController id="uwI-d2-7Sm" sceneMemberID="viewController">
+                <viewController id="uwI-d2-7Sm" customClass="ProfileViewController" customModule="bleapp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="If4-AD-v6j"/>
                         <viewControllerLayoutGuide type="bottom" id="AFs-1E-TuA"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="3Nd-cI-XfC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xef-Tk-RzE">
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uUf-qD-4em">
+                                <rect key="frame" x="276" y="504" width="49" height="30"/>
+                                <state key="normal" title="Logout">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="logoutButtonClicked:" destination="uwI-d2-7Sm" eventType="touchUpInside" id="vJW-fM-bbY"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="xef-Tk-RzE" secondAttribute="centerX" id="SZB-Fk-688"/>
+                            <constraint firstItem="xef-Tk-RzE" firstAttribute="top" secondItem="3Nd-cI-XfC" secondAttribute="topMargin" constant="66" id="VIN-LL-pP3"/>
+                            <constraint firstItem="AFs-1E-TuA" firstAttribute="top" secondItem="uUf-qD-4em" secondAttribute="bottom" constant="66" id="aAD-F9-v54"/>
+                            <constraint firstAttribute="centerX" secondItem="uUf-qD-4em" secondAttribute="centerX" id="edd-bE-7AD"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="usernameLabel" destination="xef-Tk-RzE" id="QlG-95-fx1"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7cJ-jd-3t3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

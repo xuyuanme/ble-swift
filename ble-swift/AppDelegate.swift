@@ -205,7 +205,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     // MARK: CreatePeripheralProtocol
     func didReceiveReadRequest(peripheralManager: CBPeripheralManager!, didReceiveReadRequest request: CBATTRequest!) {
         if(request.characteristic.UUID.UUIDString == self.characteristicUUIDString) {
-            request.value = NSData(data: "ABC".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!)
+            var result = "unknown"
+            if(PFUser.currentUser() != nil) {
+                result = PFUser.currentUser().username
+            }
+            request.value = NSData(data: result.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!)
             peripheralManager.respondToRequest(request, withResult: CBATTError.Success)
         }
     }
@@ -237,8 +241,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     // MARK: ReadPeripheralProtocol
     func didUpdateValueForCharacteristic(cbPeripheral: CBPeripheral!, characteristic: CBCharacteristic!, error: NSError!) {
         if let data = characteristic.value {
-            Logger.debug("AppDelegate#didUpdateValueForCharacteristic \(NSString(data: data, encoding: NSUTF8StringEncoding))")
-            Utils.sendNotification("\(NSString(data: data, encoding: NSUTF8StringEncoding))", soundName: "")
+            if let result = NSString(data: data, encoding: NSUTF8StringEncoding) {
+                Logger.debug("AppDelegate#didUpdateValueForCharacteristic \(result)")
+                if(result != "unknown" && PFUser.currentUser() != nil) {
+                    Utils.sendNotification("\(NSString(data: data, encoding: NSUTF8StringEncoding))", soundName: "")
+                }
+            }
         }
         if let peripheral = self.selectedPeripheral[cbPeripheral] {
             CentralManager.sharedInstance().cancelPeripheralConnection(peripheral, userClickedCancel: true);

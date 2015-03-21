@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C0145EA1ABAD13D007D7E18 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C0145E91ABAD13D007D7E18 /* ParseUI.framework */; };
+		1C0145EC1ABAD4A1007D7E18 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0145EB1ABAD4A1007D7E18 /* ProfileViewController.swift */; };
+		1C0145EE1ABAD61F007D7E18 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C0145ED1ABAD61F007D7E18 /* Social.framework */; };
+		1C0145F01ABAD627007D7E18 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C0145EF1ABAD627007D7E18 /* Accounts.framework */; };
 		1C124BE419F545F400CCB571 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C124BE319F545F400CCB571 /* CoreBluetooth.framework */; };
 		1C49669619F4B3B200B96165 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C49669519F4B3B200B96165 /* AppDelegate.swift */; };
 		1C49669819F4B3B200B96165 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C49669719F4B3B200B96165 /* MainViewController.swift */; };
@@ -36,6 +40,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1C0145E91ABAD13D007D7E18 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
+		1C0145EB1ABAD4A1007D7E18 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		1C0145ED1ABAD61F007D7E18 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		1C0145EF1ABAD627007D7E18 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		1C124BE319F545F400CCB571 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		1C49669019F4B3B200B96165 /* bleapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bleapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C49669419F4B3B200B96165 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -73,6 +81,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C0145F01ABAD627007D7E18 /* Accounts.framework in Frameworks */,
+				1C0145EE1ABAD61F007D7E18 /* Social.framework in Frameworks */,
 				1C9CB07A1AB6B5AD0061A166 /* libsqlite3.dylib in Frameworks */,
 				1C9CB0781AB6B59A0061A166 /* libz.dylib in Frameworks */,
 				1C9CB0761AB6B5900061A166 /* SystemConfiguration.framework in Frameworks */,
@@ -85,6 +95,7 @@
 				1C9CB0681AB6B54E0061A166 /* CFNetwork.framework in Frameworks */,
 				1C9CB0661AB6B5450061A166 /* AudioToolbox.framework in Frameworks */,
 				1C124BE419F545F400CCB571 /* CoreBluetooth.framework in Frameworks */,
+				1C0145EA1ABAD13D007D7E18 /* ParseUI.framework in Frameworks */,
 				1C9CB0641AB6B4E90061A166 /* Parse.framework in Frameworks */,
 				1C9CB0631AB6B4E90061A166 /* Bolts.framework in Frameworks */,
 			);
@@ -115,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				1C49669519F4B3B200B96165 /* AppDelegate.swift */,
+				1C0145EB1ABAD4A1007D7E18 /* ProfileViewController.swift */,
 				1C49669719F4B3B200B96165 /* MainViewController.swift */,
 				1C502B0C19FC9EB400999451 /* SelectPeripheralViewController.swift */,
 				1C502B0219FA43F800999451 /* CentralManager.swift */,
@@ -167,6 +179,9 @@
 		1C9CB07F1AB6DA2A0061A166 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1C0145EF1ABAD627007D7E18 /* Accounts.framework */,
+				1C0145ED1ABAD61F007D7E18 /* Social.framework */,
+				1C0145E91ABAD13D007D7E18 /* ParseUI.framework */,
 				1C9CB0791AB6B5AD0061A166 /* libsqlite3.dylib */,
 				1C9CB0771AB6B59A0061A166 /* libz.dylib */,
 				1C9CB0751AB6B5900061A166 /* SystemConfiguration.framework */,
@@ -268,6 +283,7 @@
 				1C502B0D19FC9EB400999451 /* SelectPeripheralViewController.swift in Sources */,
 				1C49669619F4B3B200B96165 /* AppDelegate.swift in Sources */,
 				1CB4175D1A050EA2004F1AF8 /* Peripheral.swift in Sources */,
+				1C0145EC1ABAD4A1007D7E18 /* ProfileViewController.swift in Sources */,
 				1C502B0319FA43F800999451 /* CentralManager.swift in Sources */,
 				1C502B0519FA466200999451 /* Utils.swift in Sources */,
 			);
