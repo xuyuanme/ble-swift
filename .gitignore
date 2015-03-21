@@ -1,6 +1,7 @@
 # Xcode
 #
 Keys.plist
+CloudCode/config/
 .DS_Store
 build/
 *.pbxuser
