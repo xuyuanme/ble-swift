@@ -127,6 +127,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         
         var currentInstallation = PFInstallation.currentInstallation()
         currentInstallation.setDeviceTokenFromData(deviceToken)
+        if(PFUser.currentUser() != nil) {
+            currentInstallation["user"] = PFUser.currentUser()
+        }
         currentInstallation.saveInBackgroundWithBlock(nil)
     }
     

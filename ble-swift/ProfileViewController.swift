@@ -27,6 +27,7 @@ class ProfileViewController: UIViewController, PFLogInViewControllerDelegate, PF
     }
     
     func logInViewController(logInController: PFLogInViewController!, didLogInUser user: PFUser!) {
+        updateInstallationWithUser(user)
         dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -39,6 +40,7 @@ class ProfileViewController: UIViewController, PFLogInViewControllerDelegate, PF
     }
     
     func signUpViewController(signUpController: PFSignUpViewController!, didSignUpUser user: PFUser!) {
+        updateInstallationWithUser(user)
         dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -68,6 +70,12 @@ class ProfileViewController: UIViewController, PFLogInViewControllerDelegate, PF
         logInController.delegate = self
         logInController.signUpController.delegate = self
         self.presentViewController(logInController, animated:true, completion: nil)
+    }
+    
+    private func updateInstallationWithUser(user:PFUser) {
+        var currentInstallation = PFInstallation.currentInstallation()
+        currentInstallation["user"] = user
+        currentInstallation.saveInBackgroundWithBlock(nil)
     }
     
 }
