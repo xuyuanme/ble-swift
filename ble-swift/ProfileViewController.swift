@@ -54,6 +54,7 @@ class ProfileViewController: UIViewController, PFLogInViewControllerDelegate, PF
     
     @IBAction func logoutButtonClicked(sender: AnyObject) {
         PFUser.logOut()
+        updateInstallationWithUser(nil)
         usernameLabel.text = ""
         showLoginView()
     }
@@ -72,9 +73,13 @@ class ProfileViewController: UIViewController, PFLogInViewControllerDelegate, PF
         self.presentViewController(logInController, animated:true, completion: nil)
     }
     
-    private func updateInstallationWithUser(user:PFUser) {
+    private func updateInstallationWithUser(user:PFUser?) {
         var currentInstallation = PFInstallation.currentInstallation()
-        currentInstallation["user"] = user
+        if(user != nil) {
+            currentInstallation["user"] = user
+        } else {
+            currentInstallation.removeObjectForKey("user")
+        }
         currentInstallation.saveInBackgroundWithBlock(nil)
     }
     

@@ -130,7 +130,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if(PFUser.currentUser() != nil) {
             currentInstallation["user"] = PFUser.currentUser()
         }
-        currentInstallation.saveInBackgroundWithBlock(nil)
+        PFGeoPoint.geoPointForCurrentLocationInBackground { (geoPoint:PFGeoPoint!, error:NSError!) -> Void in
+            if(error == nil) {
+                currentInstallation["location"] = geoPoint
+            } else {
+                Logger.debug("Get user location error: \(error)")
+            }
+            currentInstallation.saveInBackgroundWithBlock(nil)
+        }
     }
     
     func application(application: UIApplication!, didFailToRegisterForRemoteNotificationsWithError error: NSError!) {
@@ -194,7 +201,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     // MARK: CLLocationManagerDelegate
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [CLLocation]!) {
         Logger.debug("Updated locations: \(locations)")
-        Utils.sendNotification("\(locations)", soundName: "")
+//        Utils.sendNotification("\(locations)", soundName: "")
+        var currentInstallation = PFInstallation.currentInstallation()
+        currentInstallation["location"] = PFGeoPoint(location: locations[0])
+        currentInstallation.saveInBackgroundWithBlock(nil)
     }
     
     // MARK: UIAlertViewDelegate
@@ -209,10 +219,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     func didReceiveReadRequest(peripheralManager: CBPeripheralManager!, didReceiveReadRequest request: CBATTRequest!) {
         if(request.characteristic.UUID.UUIDString == self.characteristicUUIDString) {
             var result = "unknown"
-            if(PFUser.currentUser() != nil) {
-                result = PFUser.currentUser().username
+            if let installationId = PFInstallation.currentInstallation().objectId {
+                result = installationId
             }
-            request.value = NSData(data: result.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!)
+            request.value = NSData(data: result.dataUsingEncoding(NSUTF8StringEncoding)!)
             peripheralManager.respondToRequest(request, withResult: CBATTError.Success)
         }
     }
@@ -244,14 +254,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     // MARK: ReadPeripheralProtocol
     func didUpdateValueForCharacteristic(cbPeripheral: CBPeripheral!, characteristic: CBCharacteristic!, error: NSError!) {
         if let data = characteristic.value {
-            if let result = NSString(data: data, encoding: NSUTF8StringEncoding) {
-                Logger.debug("AppDelegate#didUpdateValueForCharacteristic \(result)")
-                if(result != "unknown" && PFUser.currentUser() != nil) {
-                    Utils.sendNotification("\(NSString(data: data, encoding: NSUTF8StringEncoding))", soundName: "")
+            if let installationId = NSString(data: data, encoding: NSUTF8StringEncoding) {
+                Logger.debug("AppDelegate#didUpdateValueForCharacteristic \(installationId)")
+                var discovery = PFObject(className: "Discovery")
+                discovery["fromDevice"] = PFInstallation.currentInstallation()
+                var discoveredDevice = PFInstallation()
+                discoveredDevice.objectId = installationId
+                discovery["discoveredDevice"] = discoveredDevice
+                PFGeoPoint.geoPointForCurrentLocationInBackground { (geoPoint:PFGeoPoint!, error:NSError!) -> Void in
+                    if(error == nil) {
+                        discovery["location"] = geoPoint
+                    } else {
+                        Logger.debug("Get user location error: \(error)")
+                    }
+                    discovery.saveInBackgroundWithBlock(nil)
                 }
             }
+        } else {
+            Logger.debug("AppDelegate#didUpdateValueForCharacteristic: Received nil characteristic value from peripheral \(cbPeripheral.name)")
         }
         if let peripheral = self.selectedPeripheral[cbPeripheral] {
+            Logger.debug("AppDelegate#didUpdateValueForCharacteristic: Cancel peripheral connection")
             CentralManager.sharedInstance().cancelPeripheralConnection(peripheral, userClickedCancel: true);
         }
     }
