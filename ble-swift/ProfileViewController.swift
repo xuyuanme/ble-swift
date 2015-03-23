@@ -59,6 +59,10 @@ class ProfileViewController: UIViewController, PFLogInViewControllerDelegate, PF
         showLoginView()
     }
     
+    @IBAction func quitButtonClicked(sender: AnyObject) {
+        kill(getpid(), SIGKILL)
+    }
+    
     private func showLoginView() {
         var logInController = PFLogInViewController()
         logInController.fields = PFLogInFields.UsernameAndPassword | PFLogInFields.LogInButton | PFLogInFields.SignUpButton | PFLogInFields.PasswordForgotten

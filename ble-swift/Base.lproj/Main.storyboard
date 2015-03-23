@@ -164,7 +164,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xef-Tk-RzE">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xef-Tk-RzE">
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -178,13 +178,24 @@
                                     <action selector="logoutButtonClicked:" destination="uwI-d2-7Sm" eventType="touchUpInside" id="vJW-fM-bbY"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A3E-1i-hYF">
+                                <rect key="frame" x="285" y="554" width="30" height="30"/>
+                                <state key="normal" title="Quit">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="quitButtonClicked:" destination="uwI-d2-7Sm" eventType="touchUpInside" id="wIV-Od-9Db"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="A3E-1i-hYF" firstAttribute="centerX" secondItem="uUf-qD-4em" secondAttribute="centerX" id="7yk-ep-4oA"/>
                             <constraint firstAttribute="centerX" secondItem="xef-Tk-RzE" secondAttribute="centerX" id="SZB-Fk-688"/>
                             <constraint firstItem="xef-Tk-RzE" firstAttribute="top" secondItem="3Nd-cI-XfC" secondAttribute="topMargin" constant="66" id="VIN-LL-pP3"/>
                             <constraint firstItem="AFs-1E-TuA" firstAttribute="top" secondItem="uUf-qD-4em" secondAttribute="bottom" constant="66" id="aAD-F9-v54"/>
                             <constraint firstAttribute="centerX" secondItem="uUf-qD-4em" secondAttribute="centerX" id="edd-bE-7AD"/>
+                            <constraint firstItem="A3E-1i-hYF" firstAttribute="top" secondItem="uUf-qD-4em" secondAttribute="bottom" constant="20" id="xOG-DF-cJZ"/>
                         </constraints>
                     </view>
                     <connections>

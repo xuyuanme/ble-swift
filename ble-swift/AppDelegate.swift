@@ -153,15 +153,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         var notification:NSDictionary = userInfo["aps"] as NSDictionary
-        var alert:String = notification.objectForKey("alert") as String
-        
         if (application.applicationState == UIApplicationState.Active || application.applicationState == UIApplicationState.Inactive) {
-            // If the value is Inactive, the user tapped an action button; if the value is Active, the app was frontmost when it received the notification
-            Utils.showAlert("didReceiveRemoteNotification \(application.applicationState.rawValue.description) \(alert)")
-            application.applicationIconBadgeNumber = 0
+            if let alert = notification.objectForKey("alert") as? String {
+                // If the value is Inactive, the user tapped an action button; if the value is Active, the app was frontmost when it received the notification
+                Utils.showAlert("didReceiveRemoteNotification \(application.applicationState.rawValue.description) \(alert)")
+                application.applicationIconBadgeNumber = 0
+            } else {
+                // content-available
+                Logger.debug(userInfo)
+            }
         } else {
             // Background or Not Running
-            Logger.debug(notification)
+            Logger.debug(userInfo)
         }
         
         if(application.applicationState == UIApplicationState.Inactive) {
@@ -171,8 +174,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         }
     }
 
+    // Silent remote notification sample:
+    //    {
+    //      aps = {
+    //          sound = "";
+    //          "content-available" = 1;
+    //      };
+    //      type = rescan;
+    //    }
     func application(application: UIApplication!, didReceiveRemoteNotification userInfo:[NSObject : AnyObject], fetchCompletionHandler handler:(UIBackgroundFetchResult) -> Void) {
-        self.application(application, didReceiveRemoteNotification: userInfo)
+        if let type = userInfo["type"] as? String {
+            if(type == "rescan") {
+                Logger.debug("Received silent notification, restart bluetooth scanning")
+                CentralManager.sharedInstance().stopScanning()
+                CentralManager.sharedInstance().startScanning(afterPeripheralDiscovered, allowDuplicatesKey: false)
+            }
+        } else {
+            self.application(application, didReceiveRemoteNotification: userInfo)
+        }
         handler(UIBackgroundFetchResult.NewData)
     }
 
