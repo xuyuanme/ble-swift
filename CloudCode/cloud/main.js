@@ -32,7 +32,7 @@ Parse.Cloud.job('scandiscovery', function(request, status) {
 	var Discovery = Parse.Object.extend("Discovery");
 	var discoveryQuery = new Parse.Query(Discovery);
 	discoveryQuery.notEqualTo("scanned", true);
-	discoveryQuery.notEqualTo("derived", true);
+	discoveryQuery.notEqualTo("derived", "flipped");
 	var d = new Date();
 	var timeNow = d.getTime();
 	var timeThen = timeNow - interval;
@@ -48,15 +48,8 @@ Parse.Cloud.job('scandiscovery', function(request, status) {
 				switchedDiscovery.set("fromDevice", discovery.get("discoveredDevice"));
 				switchedDiscovery.set("discoveredDevice", discovery.get("fromDevice"));
 				switchedDiscovery.set("location", discovery.get("location"));
-				switchedDiscovery.set("derived", true);
-				switchedDiscovery.save(null, {
-					success: function(switchedDiscovery) {
-						status.message("Saved derived data " + switchedDiscovery);
-					},
-					error: function(switchedDiscovery, error) {
-						status.message(error);
-					}
-				});
+				switchedDiscovery.set("derived", "flipped");
+				switchedDiscovery.save();
 				discovery.set("scanned", true);
 				discovery.save();
 			}
@@ -110,6 +103,35 @@ Parse.Cloud.afterSave("Discovery", function(request) {
 				// Push the counterparty
 				// delay does not work in afterSave, don't know the reason yet
 				// delay(1000).then(delayPushDiscovery(request.object.get("discoveredDevice").id, request.object.get("fromDevice").id));
+				console.log("Introduce friends of " + request.object.get("fromDevice"));
+				const interval = 2 * 60 * 1000; // 2 mins
+				var Discovery = Parse.Object.extend("Discovery");
+				var discoveryQuery = new Parse.Query(Discovery);
+				discoveryQuery.equalTo("fromDevice", request.object.get("fromDevice"));
+				var d = new Date();
+				var timeNow = d.getTime();
+				var timeThen = timeNow - interval;
+				var queryDate = new Date();
+				queryDate.setTime(timeThen);
+				discoveryQuery.greaterThanOrEqualTo("updatedAt", queryDate);
+				discoveryQuery.find({
+					success: function(results) {
+						for (var i = 0; i < results.length; i++) { 
+							var discovery = results[i];
+							if (discovery.get("discoveredDevice").id != request.object.get("discoveredDevice").id) {
+								var switchedDiscovery = new Discovery();
+								switchedDiscovery.set("fromDevice", request.object.get("discoveredDevice")); // Introduce friend A
+								switchedDiscovery.set("discoveredDevice", discovery.get("discoveredDevice")); // to know friend B
+								switchedDiscovery.set("location", request.object.get("location"));
+								switchedDiscovery.set("derived", request.object.get("fromDevice").id);
+								switchedDiscovery.save();
+							}
+						}
+					},
+					error: function(error) {
+						console.error(error);
+					}
+				});
 			},
 			error: function(error) {
 				console.error(error);
