@@ -3,6 +3,7 @@
 Keys.plist
 CloudCode/config/
 .DS_Store
+.dropbox.attr
 build/
 *.pbxuser
 !default.pbxuser
