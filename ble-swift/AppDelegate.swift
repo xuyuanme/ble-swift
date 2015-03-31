@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     var serviceUUIDString:String = ""
     var characteristicUUIDString:String = ""
     
-    var selectedPeripheral : Dictionary<CBPeripheral, Peripheral> = [:]
+    var discoveredPeripherals : Dictionary<CBPeripheral, Peripheral> = [:]
 
     // MARK: UIApplicationDelegate
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -237,9 +237,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     // MARK: CreatePeripheralProtocol
     func didReceiveReadRequest(peripheralManager: CBPeripheralManager!, didReceiveReadRequest request: CBATTRequest!) {
         if(request.characteristic.UUID.UUIDString == self.characteristicUUIDString) {
-            var result = "unknown"
-            if let installationId = PFInstallation.currentInstallation().objectId {
-                result = installationId
+            var result = ""
+            if let user = PFUser.currentUser() {
+                result = user.username + " " + PFInstallation.currentInstallation().objectId
+            } else {
+                result = "Unknown " + PFInstallation.currentInstallation().objectId
             }
             request.value = NSData(data: result.dataUsingEncoding(NSUTF8StringEncoding)!)
             peripheralManager.respondToRequest(request, withResult: CBATTError.Success)
@@ -249,7 +251,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     // MARK: ConnectPeripheralProtocol
     func didConnectPeripheral(cbPeripheral: CBPeripheral!) {
         Logger.debug("AppDelegate#didConnectPeripheral \(cbPeripheral.name)")
-        if let peripheral = self.selectedPeripheral[cbPeripheral] {
+        if let peripheral = self.discoveredPeripherals[cbPeripheral] {
             peripheral.discoverServices([CBUUID(string: serviceUUIDString)], delegate: self)
         }
     }
@@ -263,47 +265,91 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     }
     
     func bluetoothBecomeAvailable() {
-        CentralManager.sharedInstance().startScanning(afterPeripheralDiscovered, allowDuplicatesKey: false)
+        self.startScanning()
     }
     
     func bluetoothBecomeUnavailable() {
-        CentralManager.sharedInstance().stopScanning()
+        self.stopScanning()
     }
     
     // MARK: ReadPeripheralProtocol
     func didUpdateValueForCharacteristic(cbPeripheral: CBPeripheral!, characteristic: CBCharacteristic!, error: NSError!) {
         if let data = characteristic.value {
-            if let installationId = NSString(data: data, encoding: NSUTF8StringEncoding) {
-                Logger.debug("AppDelegate#didUpdateValueForCharacteristic \(installationId)")
-                var discovery = PFObject(className: "Discovery")
-                discovery["fromDevice"] = PFInstallation.currentInstallation()
+            if let result = NSString(data: data, encoding: NSUTF8StringEncoding) {
+                Logger.debug("AppDelegate#didUpdateValueForCharacteristic \(result)")
+                let results = result.componentsSeparatedByString(" ")
+                var username:String = results[0] as String
+                var installationId = results[1] as String
                 var discoveredDevice = PFInstallation()
                 discoveredDevice.objectId = installationId
-                discovery["discoveredDevice"] = discoveredDevice
-                PFGeoPoint.geoPointForCurrentLocationInBackground { (geoPoint:PFGeoPoint!, error:NSError!) -> Void in
-                    if(error == nil) {
-                        discovery["location"] = geoPoint
-                    } else {
-                        Logger.debug("Get user location error: \(error)")
-                    }
-                    discovery.saveInBackgroundWithBlock(nil)
+                self.uploadDiscoveryToParse(PFInstallation.currentInstallation(), discoveredDevice: discoveredDevice)
+                
+                if let peripheral:Peripheral = discoveredPeripherals[cbPeripheral] {
+                    peripheral.name = username
+                    peripheral.installationId = installationId
+                    peripheral.hasBeenConnected = true
                 }
+
+                NSNotificationCenter.defaultCenter().postNotificationName("didUpdateValueForCharacteristic", object: nil)
             }
         } else {
             Logger.debug("AppDelegate#didUpdateValueForCharacteristic: Received nil characteristic value from peripheral \(cbPeripheral.name)")
         }
-        if let peripheral = self.selectedPeripheral[cbPeripheral] {
+        if let peripheral = self.discoveredPeripherals[cbPeripheral] {
             Logger.debug("AppDelegate#didUpdateValueForCharacteristic: Cancel peripheral connection")
             CentralManager.sharedInstance().cancelPeripheralConnection(peripheral, userClickedCancel: true);
         }
     }
     
-    // MARK: Private
-    private func afterPeripheralDiscovered(cbPeripheral:CBPeripheral, advertisementData:NSDictionary, RSSI:NSNumber) {
-        let peripheral = Peripheral(cbPeripheral:cbPeripheral, advertisements:advertisementData, rssi:RSSI.integerValue)
-        Logger.debug("AppDelegate#afterPeripheralDiscovered: Connect peripheral \(peripheral.name)")
-        CentralManager.sharedInstance().connectPeripheral(peripheral)
-        selectedPeripheral[peripheral.cbPeripheral] = peripheral
+    // MARK: Pbulic functions
+    func startScanning() {
+        for peripheral:Peripheral in self.discoveredPeripherals.values.array {
+            peripheral.isNearby = false
+        }
+        CentralManager.sharedInstance().startScanning(afterPeripheralDiscovered, allowDuplicatesKey: false)
+    }
+    
+    func stopScanning() {
+        CentralManager.sharedInstance().stopScanning()
+    }
+    
+    func afterPeripheralDiscovered(cbPeripheral:CBPeripheral, advertisementData:NSDictionary, RSSI:NSNumber) {
+        Logger.debug("AppDelegate#afterPeripheralDiscovered: \(cbPeripheral)")
+        var peripheral : Peripheral
+        
+        if let p = discoveredPeripherals[cbPeripheral] {
+            peripheral = p
+        } else {
+            peripheral = Peripheral(cbPeripheral:cbPeripheral, advertisements:advertisementData, rssi:RSSI.integerValue)
+            discoveredPeripherals[peripheral.cbPeripheral] = peripheral
+        }
+        
+        peripheral.isNearby = true
+
+        if (!peripheral.hasBeenConnected) {
+            CentralManager.sharedInstance().connectPeripheral(peripheral)
+        } else {
+            var discoveredDevice = PFInstallation()
+            discoveredDevice.objectId = peripheral.installationId
+            self.uploadDiscoveryToParse(PFInstallation.currentInstallation(), discoveredDevice: discoveredDevice)
+        }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName("afterPeripheralDiscovered", object: nil)
+    }
+    
+    // MARK: - Private
+    private func uploadDiscoveryToParse(fromDevice:PFInstallation, discoveredDevice:PFInstallation) {
+        var discovery = PFObject(className: "Discovery")
+        discovery["fromDevice"] = fromDevice
+        discovery["discoveredDevice"] = discoveredDevice
+        PFGeoPoint.geoPointForCurrentLocationInBackground { (geoPoint:PFGeoPoint!, error:NSError!) -> Void in
+            if(error == nil) {
+                discovery["location"] = geoPoint
+            } else {
+                Logger.debug("Get user location error: \(error)")
+            }
+            discovery.saveInBackgroundWithBlock(nil)
+        }
     }
 
 }

@@ -25,13 +25,32 @@ public class Peripheral : NSObject, CBPeripheralDelegate {
     public let advertisements  : Dictionary<NSObject, AnyObject>!
     public let rssi            : Int!
     
+    private var _name : String?
     public var name : String {
-        if let name = cbPeripheral.name {
-            return name
-        } else {
-            return "Unknown"
+        get{
+            // iOS does not advertise peripheral name in background
+            // and even the peripheral is in foreground, the central might still use peripheral's old cached name
+            // So only use peripheral's name when explicit name is unavialable
+            if(_name == nil) {
+                if let name = cbPeripheral.name {
+                    return name
+                } else {
+                    return "Unknown"
+                }
+            } else {
+                return _name!
+            }
+        }
+        set{
+            _name = newValue
         }
     }
+    
+    public var installationId : String?
+    
+    public var isNearby = false
+    
+    public var hasBeenConnected = false
     
     public var state : CBPeripheralState {
         return self.cbPeripheral.state
