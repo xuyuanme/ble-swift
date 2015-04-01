@@ -31,6 +31,7 @@ Parse.Cloud.job('scandiscovery', function(request, status) {
 	const interval = 30 * 60 * 1000; // 30 min
 	var Discovery = Parse.Object.extend("Discovery");
 	var discoveryQuery = new Parse.Query(Discovery);
+	discoveryQuery.equalTo("pushed", true); // avoid to flip the too-frequently reported records
 	discoveryQuery.notEqualTo("scanned", true);
 	discoveryQuery.notEqualTo("derived", "flipped");
 	var d = new Date();
