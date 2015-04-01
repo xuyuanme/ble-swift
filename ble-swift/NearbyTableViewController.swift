@@ -126,8 +126,11 @@ class NearbyTableViewController: UITableViewController {
     
     // MARK: - Private
     func refreshTable(notification: NSNotification) {
+        Logger.debug("NearbyTableViewController#refreshTable for \(notification.name) notification")
         self.updateData()
-        self.tableView.reloadData()
+        dispatch_async(dispatch_get_main_queue()) {
+            self.tableView.reloadData()
+        }
     }
     
     private func updateData() {
