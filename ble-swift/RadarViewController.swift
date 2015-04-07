@@ -47,8 +47,11 @@ class RadarViewController: UIViewController {
     
     func afterPeripheralDiscovered(cbPeripheral:CBPeripheral, advertisementData:NSDictionary, RSSI:NSNumber) {
         if (peripheral?.cbPeripheral == cbPeripheral) {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.rssiLabel.text = RSSI.stringValue
+            // Bypass 127. The disconnected case will be handled by other logic
+            if (RSSI != 127) { // 127 means disconnected, which sometimes is not true
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.rssiLabel.text = RSSI.stringValue
+                }
             }
         }
     }
