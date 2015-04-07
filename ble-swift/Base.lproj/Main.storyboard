@@ -134,6 +134,39 @@
             </objects>
             <point key="canvasLocation" x="2310" y="108"/>
         </scene>
+        <!--Radar View Controller-->
+        <scene sceneID="3ZX-xP-8dx">
+            <objects>
+                <viewController id="c3j-w5-KU3" customClass="RadarViewController" customModule="bleapp" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="NGG-pc-Gij"/>
+                        <viewControllerLayoutGuide type="bottom" id="ZqO-bm-F16"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="9kq-hx-V0Y">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RSSI" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uOa-Uy-2Ol">
+                                <rect key="frame" x="281" y="304" width="39" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="uOa-Uy-2Ol" firstAttribute="centerX" secondItem="9kq-hx-V0Y" secondAttribute="centerX" id="0qV-Mu-FbJ"/>
+                            <constraint firstItem="uOa-Uy-2Ol" firstAttribute="top" secondItem="NGG-pc-Gij" secondAttribute="bottom" constant="240" id="c5v-f7-elY"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="rssiLabel" destination="uOa-Uy-2Ol" id="PCp-GU-6l2"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eT6-La-nVt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2977" y="771"/>
+        </scene>
         <!--Nearby Table View Controller-->
         <scene sceneID="BP1-KD-YNK">
             <objects>
@@ -148,6 +181,9 @@
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Al0-2G-oJf" id="lcc-50-m6P">
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="c3j-w5-KU3" kind="show" id="Db7-nd-yM8"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

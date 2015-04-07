@@ -22,6 +22,7 @@
 		1C502B0919FA46C000999451 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C502B0819FA46C000999451 /* Logger.swift */; };
 		1C502B0D19FC9EB400999451 /* SelectPeripheralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C502B0C19FC9EB400999451 /* SelectPeripheralViewController.swift */; };
 		1C52BD6E1A0DC3110047735A /* PeripheralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C52BD6D1A0DC3110047735A /* PeripheralManager.swift */; };
+		1C6CF0E41ACE872400E7F57E /* RadarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CF0E31ACE872400E7F57E /* RadarViewController.swift */; };
 		1C9CB0631AB6B4E90061A166 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB0611AB6B4E90061A166 /* Bolts.framework */; };
 		1C9CB0641AB6B4E90061A166 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB0621AB6B4E90061A166 /* Parse.framework */; };
 		1C9CB0661AB6B5450061A166 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9CB0651AB6B5450061A166 /* AudioToolbox.framework */; };
@@ -60,6 +61,7 @@
 		1C502B0819FA46C000999451 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		1C502B0C19FC9EB400999451 /* SelectPeripheralViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectPeripheralViewController.swift; sourceTree = "<group>"; };
 		1C52BD6D1A0DC3110047735A /* PeripheralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralManager.swift; sourceTree = "<group>"; };
+		1C6CF0E31ACE872400E7F57E /* RadarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadarViewController.swift; sourceTree = "<group>"; };
 		1C9CB0611AB6B4E90061A166 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		1C9CB0621AB6B4E90061A166 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		1C9CB0651AB6B5450061A166 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -130,6 +132,7 @@
 				1C49669519F4B3B200B96165 /* AppDelegate.swift */,
 				1C0145EB1ABAD4A1007D7E18 /* ProfileViewController.swift */,
 				1CCADEB61AC3E785008422B1 /* NearbyTableViewController.swift */,
+				1C6CF0E31ACE872400E7F57E /* RadarViewController.swift */,
 				1C49669719F4B3B200B96165 /* MainViewController.swift */,
 				1C502B0C19FC9EB400999451 /* SelectPeripheralViewController.swift */,
 				1C502B0219FA43F800999451 /* CentralManager.swift */,
@@ -290,6 +293,7 @@
 				1C0145EC1ABAD4A1007D7E18 /* ProfileViewController.swift in Sources */,
 				1C502B0319FA43F800999451 /* CentralManager.swift in Sources */,
 				1C502B0519FA466200999451 /* Utils.swift in Sources */,
+				1C6CF0E41ACE872400E7F57E /* RadarViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

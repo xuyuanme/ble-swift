@@ -114,15 +114,20 @@ class NearbyTableViewController: UITableViewController {
     }
     */
 
-    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using [segue destinationViewController].
         // Pass the selected object to the new view controller.
+        let path = self.tableView.indexPathForSelectedRow()!
+        let vc : RadarViewController = segue.destinationViewController as RadarViewController
+        if (path.section == 0) {
+            vc.peripheral = nearbyPeripherals[path.row]
+        } else {
+            vc.peripheral = historyPeripherals[path.row]
+        }
     }
-    */
     
     // MARK: - Private
     func refreshTable(notification: NSNotification) {
